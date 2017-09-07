@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import {ListGroup,Panel} from 'react-bootstrap'
+import {Panel} from 'react-bootstrap'
 import PostItem from './PostItem'
 
 class PostList extends Component{
