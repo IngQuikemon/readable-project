@@ -3,25 +3,31 @@ import {Route} from 'react-router-dom';
 import AllCategories from './AllCategories';
 import FilteredCategories from './FilteredCategories';
 import PostView from './PostView';
+import * as APIInterface from '../utils/APIInterface'
 
 class App extends Component {
   state = {
     posts : [],
-    categories: [
-      {
-        name: 'react',
-        path: 'react'
-      },
-      {
-        name: 'redux',
-        path: 'redux'
-      },
-      {
-        name: 'udacity',
-        path: 'udacity'
-      }
-    ]
+    categories: []
   }
+  componentDidMount(){
+    if(this.state.categories.length === 0)
+      this.loadCategories();
+    this.loadPosts();
+  }
+
+  loadCategories = () => {
+    APIInterface.getCategories().then((categories) =>{
+      this.setState({categories});
+    });
+  }
+
+  loadPosts = () => {
+    APIInterface.getPosts().then((posts) => {
+      this.setState({posts});
+    });
+  }
+
   render(){
     return(
       <div>

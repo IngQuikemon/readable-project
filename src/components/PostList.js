@@ -5,7 +5,7 @@ import PostItem from './PostItem'
 class PostList extends Component{
   render(){
     const {posts} = this.props;
-    if(posts.length === 0){
+    if(posts === undefined || posts.length === 0){
       return (
         <Panel>
           No posts found yet. Come on and start posting.
@@ -13,9 +13,14 @@ class PostList extends Component{
       );
     }
     else{
-      posts.map((post) => (
-        <PostItem postItem={post} />
-      ))
+      return(
+        <div>
+          {posts.map((post) => (
+            <PostItem key={post.id} postItem={post} />
+          ))}
+        </div>
+      );
+
     }
   }
 }

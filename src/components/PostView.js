@@ -4,7 +4,6 @@ class PostView extends Component{
   render(){
     return(
       <div>
-        Todo view.
       </div>
     );
   }

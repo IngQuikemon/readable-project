@@ -12,9 +12,7 @@ class AllCategories extends Component{
         <Row className="show-grid">
           <Col md={10}>
             <PageHeader> Readable <small>a Udacity project</small></PageHeader>
-            <div>
-              <PostList posts={posts}/>
-            </div>
+            <PostList posts={posts}/>
           </Col>
           <Col md={2}>
             <CategoriesList categories={categories} />

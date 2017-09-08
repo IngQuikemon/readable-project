@@ -1,16 +1,22 @@
 import React, {Component} from 'react'
 import {ListGroupItem, Badge } from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 
 class PostItem extends Component {
   render(){
+    const {postItem} = this.props;
+    let dateToParse = new Date(postItem.timestamp);
+    const postDate = dateToParse.getMonth() + '/' + dateToParse.getDay() + '/' + dateToParse.getFullYear();
     return(
-      <ListGroupItem href="#post1">
-        <span className="blob_title_text">Post 1 Title</span>
-        <span className="blob_title_subtext">posted on XX&#47;XX&#47;XXXX</span>
-        <span className="blob_score_text">Score <Badge>XX</Badge></span>
-        <br/>
-        <span className="blob_body">This is some text to proof concept of content.</span>
-      </ListGroupItem>
+
+        <ListGroupItem >
+          <span className="blob_title_text"><Link to={`/posts/${postItem.id}`}>{postItem.title}</Link></span>
+          <span className="blob_title_subtext">posted on {postDate}</span>
+          <span className="blob_score_text">Score <Badge>{postItem.voteScore}</Badge></span>
+          <br/>
+          <span className="blob_body">{postItem.body}</span>
+        </ListGroupItem>
+
     )
   }
 }
