@@ -3,7 +3,7 @@ import { Grid, Row, Col, PageHeader} from 'react-bootstrap';
 import PostList from './PostList';
 import CategoriesList from './CategoriesList';
 
-class AllCategories extends Component{
+class AllPosts extends Component{
 
   render(){
     const {categories,posts} = this.props;
@@ -23,4 +23,4 @@ class AllCategories extends Component{
   }
 }
 
-export default AllCategories
+export default AllPosts

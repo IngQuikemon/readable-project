@@ -25,3 +25,8 @@ export const getPosts = () =>
   fetch(`${api}/posts`,  vars )
     .then(res => res.json())
     .then(data => data)
+
+export const getPost = (id) =>
+  fetch(`${api}/posts/${id}`,  vars )
+  .then(res => res.json())
+  .then(data => data)

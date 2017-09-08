@@ -4,6 +4,14 @@ import {Link} from 'react-router-dom';
 import PostList from './PostList';
 
 class FilteredCategories extends Component {
+  componentDidMount(){
+    this.filterByCategory(this.props.match.params.category);
+  }
+
+  filterByCategory = (filter) => {
+    this.props.onLoadByCategory(filter);
+  }
+
   render(){
     const {posts} = this.props;
     const {category} = this.props.match.params;
