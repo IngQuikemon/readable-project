@@ -7,7 +7,6 @@ if (!token)
   token = localStorage.token = Math.random().toString(18).substr(-8);
 const vars = {
   headers: { 'Authorization': token,
-              'Accept' : 'application/json',
               'Content-Type': 'application/json'},
   method: 'GET'
 }
@@ -40,10 +39,36 @@ export const getComments = (postId) =>
   .then(res => res.json())
   .then(data => data)
 
-//Posts Methods
 export const addComment = (comment) =>
-  fetch(`${api}/comments`, {
+    fetch(`${api}/comments`, {
+      ...vars,
+      method: 'POST',
+      body: JSON.stringify(comment)
+    }).then(res => res.json())
+
+export const editComment = (comment,commentId) =>
+  fetch(`${api}/comments/${commentId}`, {
+    ...vars,
+    method: 'PUT',
+    body: JSON.stringify(comment)
+  }).then(res => res.json())
+
+export const voteComment = (id,voteValue) =>
+  fetch(`${api}/comments/${id}`, {
     ...vars,
     method: 'POST',
-    body: JSON.stringify({ comment})
+    body: JSON.stringify(voteValue)
+  }).then(res => res.json())
+
+export const deleteComment  = (id) =>
+  fetch(`${api}/comments/${id}`, {
+    ...vars,
+    method: 'DELETE'
+  }).then(res => res.json())
+
+export const votePost = (id,voteValue) =>
+  fetch(`${api}/posts/${id}`, {
+    ...vars,
+    method: 'POST',
+    body: JSON.stringify(voteValue)
   }).then(res => res.json())

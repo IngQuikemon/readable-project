@@ -40,31 +40,31 @@ class CommentList extends Component{
 
 
   render(){
-    const {comments,onLoadComments,postId,onSaveComment} = this.props;
-    console.log(onSaveComment)
+    const {comments,onLoadComments,postId,onSaveComment,onVoteComment,onDeleteComment} = this.props;
     return (
       <div>
+        <div className="full_width">
+          <span className="title_text">Comments:</span>
+          <span className="button_right">
+            <Button bsStyle="link" onClick={() => {this.openEditCommentDialog(null,postId)}}>
+              <Glyphicon glyph="plus"/> Add Comment
+            </Button>
+          </span>
+        </div>
+        <br/>
         {comments === undefined || comments.length === 0
           ? <div>
-              <h2>Comments:</h2>
               <Panel>
                 No comments found yet. Come on and start commenting.
               </Panel>
             </div>
           : <div>
-              <div className="full_width">
-                <span className="title_text">Comments:</span>
-                <span className="button_right">
-                  <Button bsStyle="link" onClick={() => {this.openEditCommentDialog(null,postId)}}>
-                    <Glyphicon glyph="plus"/> Add Comment
-                  </Button>
-                </span>
-              </div>
-              <br/>
               {comments.map((comment) => (
                 <CommentItem
                   key={comment.id}
                   commentItem={comment}
+                  onVoteComment={onVoteComment}
+                  onDeleteComment={onDeleteComment}
                   onEditCommentDialog={this.openEditCommentDialog}/>
               ))}
             </div>

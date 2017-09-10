@@ -4,7 +4,7 @@ import PostItem from './PostItem'
 
 class PostList extends Component{
   render(){
-    const {posts} = this.props;
+    const {posts,onVotePost} = this.props;
     if(posts === undefined || posts.length === 0){
       return (
         <Panel>
@@ -16,7 +16,10 @@ class PostList extends Component{
       return(
         <div>
           {posts.map((post) => (
-            <PostItem key={post.id} postItem={post} />
+            <PostItem
+              key={post.id}
+              postItem={post}
+              onVotePost={onVotePost} />
           ))}
         </div>
       );

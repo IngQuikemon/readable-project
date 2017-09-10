@@ -7,18 +7,16 @@ const parentIdField = 'commentParent';
 const commentIdField = 'commentId';
 
 class EditForm extends Component{
-
-
   handleSubmit = (event) => {
     this.props.onSaveComment({
-      id : this.commentIdInput.value === ''
-        ? this.props.onGenerateId()
-        : this.commentIdInput.value,
-      parentId: this.parentIdInput.value,
+      id:this.commentIdInput.value,
+      parentId:this.parentIdInput.value,
+      author: this.commentAuthorInput.value,
       body:this.commentBodyInput.value,
-      author:this.commentAuthorInput.value,
       timestamp:(new Date()).getTime()
-    });
+    },
+    this.commentIdInput.value,
+    this.parentIdInput.value);
     this.props.onCloseEditModal();
     event.preventDefault();
   }

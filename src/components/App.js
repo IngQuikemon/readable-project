@@ -43,19 +43,48 @@ class App extends Component {
     this.loadComments(filter);
   }
 
+  votePost = (postItem,voteValue,source) => {
+    APIInterface.votePost(postItem.id,voteValue);
+    source === 'item' ? this.loadPostItem(postItem.id) : this.loadPosts();
+  }
+
   loadComments = (filter) => {
     APIInterface.getComments(filter).then((comments) =>{
+      comments.sort((a,b) => {
+       return b.voteScore - a.voteScore;
+      })
       this.setState({comments});
     })
   }
 
-  addComment = (comment) => {
-    if(comment.id === null){
-      comment.id = APIInterface.idGenerator();
+  addComment = (comment,commentId,parentId) => {
+    let commentValue = null;
+    if(comment.id === ''){
+      commentValue = {
+        id : APIInterface.idGenerator(),
+        parentId : parentId,
+        timestamp :comment.timestamp,
+        author : comment.author,
+        body : comment.body
+      };
+      APIInterface.addComment(commentValue);
+    }else{
+      commentValue ={
+        body : comment.body,
+        timestamp : comment.timestamp
+      }
+      APIInterface.editComment(commentValue,commentId);
     }
-    console.log(JSON.stringify({ comment}));
-    APIInterface.addComment(comment);
+    this.loadPostItem(parentId);
+  }
+
+  deleteComment = (comment) => {
+    APIInterface.deleteComment(comment.id);
     this.loadPostItem(comment.parentId);
+  }
+  voteComment = (id,voteValue,parentId) => {
+    APIInterface.voteComment(id,voteValue);
+    this.loadPostItem(parentId);
   }
 
   render(){
@@ -63,7 +92,8 @@ class App extends Component {
       <div>
         <Route exact path="/" render={() =>(
             <AllPosts categories={this.state.categories}
-              posts={this.state.posts} />
+              posts={this.state.posts}
+              onVotePost={this.votePost} />
           )} />
         <Route exact path="/filtered/:category" render={props => (
             <FilteredCategories
@@ -80,6 +110,9 @@ class App extends Component {
               onLoadComments = {this.loadComments}
               onGenerateId={APIInterface.idGenerator}
               onSaveComment={this.addComment}
+              onVoteComment={this.voteComment}
+              onDeleteComment={this.deleteComment}
+              onVotePost={this.votePost}
               {...props}/>
         )} />
       </div>
