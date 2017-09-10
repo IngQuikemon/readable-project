@@ -13,7 +13,7 @@ class PostView extends Component{
   }
 
   render(){
-    const {postItem, comments} = this.props;
+    const {postItem, comments, onLoadComments} = this.props;
     let dateToParse;
     let postDate;
     if(postItem !== null){
@@ -42,6 +42,10 @@ class PostView extends Component{
               </Jumbotron>
             <br/>
             <CommentList
+              postId={postItem.id}
+              onGenerateId={this.props.onGenerateId}
+              onSaveComment={this.props.onSaveComment}
+              onLoadComments = {onLoadComments}
               comments={comments} />
             </Col>
           </Row>

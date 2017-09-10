@@ -3,6 +3,10 @@ import {Panel,Badge,Button,Glyphicon} from 'react-bootstrap';
 
 class CommentItem extends Component{
 
+  editComment = (comment) => {
+    this.props.onEditCommentDialog(comment);
+  }
+
   render(){
     const {commentItem} = this.props;
     let dateToParse = new Date(commentItem.timestamp);
@@ -14,7 +18,8 @@ class CommentItem extends Component{
         <div className="full_width">
           <span>Score: <Badge> {commentItem.voteScore}</Badge></span>
           <span className="button_right">
-            <Button bsSize="xsmall">
+            <Button bsSize="xsmall"
+              onClick={() => {this.editComment(commentItem,commentItem.parentId)}}>
               <Glyphicon glyph="pencil"/> Edit
             </Button>
             <Button bsStyle="danger" bsSize="xsmall">

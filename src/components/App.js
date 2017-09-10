@@ -40,9 +40,22 @@ class App extends Component {
     APIInterface.getPost(filter).then((postItem) =>{
       this.setState({postItem});
     })
+    this.loadComments(filter);
+  }
+
+  loadComments = (filter) => {
     APIInterface.getComments(filter).then((comments) =>{
       this.setState({comments});
     })
+  }
+
+  addComment = (comment) => {
+    if(comment.id === null){
+      comment.id = APIInterface.idGenerator();
+    }
+    console.log(JSON.stringify({ comment}));
+    APIInterface.addComment(comment);
+    this.loadPostItem(comment.parentId);
   }
 
   render(){
@@ -64,6 +77,9 @@ class App extends Component {
               postItem = {this.state.postItem}
               comments = {this.state.comments}
               onLoadPostItem = {this.loadPostItem}
+              onLoadComments = {this.loadComments}
+              onGenerateId={APIInterface.idGenerator}
+              onSaveComment={this.addComment}
               {...props}/>
         )} />
       </div>

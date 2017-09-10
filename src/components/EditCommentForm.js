@@ -1,29 +1,60 @@
 import React,{Component} from 'react';
 import {Button,FormControl,FormGroup,ControlLabel} from 'react-bootstrap';
 
+const authorIdField = 'commentAuthor';
+const bodyIdField = 'commentText';
+const parentIdField = 'commentParent';
+const commentIdField = 'commentId';
+
 class EditForm extends Component{
-  handleChange = (event) => {
-    console.log(event.target.value);
+
+
+  handleSubmit = (event) => {
+    this.props.onSaveComment({
+      id : this.commentIdInput.value === ''
+        ? this.props.onGenerateId()
+        : this.commentIdInput.value,
+      parentId: this.parentIdInput.value,
+      body:this.commentBodyInput.value,
+      author:this.commentAuthorInput.value,
+      timestamp:(new Date()).getTime()
+    });
+    this.props.onCloseEditModal();
+    event.preventDefault();
   }
+
   render(){
+    const {commentItem} = this.props;
     return(
-      <form>
-        <FormGroup controlId="commentAuthor">
+      <form onSubmit={this.handleSubmit}>
+        <FormControl
+          id={parentIdField}
+          inputRef={ref => {this.parentIdInput = ref}}
+          value={commentItem.parentId}
+          type="hidden"/>
+        <FormControl
+          id={commentIdField}
+          inputRef={ref => {this.commentIdInput = ref}}
+          value={commentItem.id}
+          type="hidden"/>
+        <FormGroup controlId={authorIdField}>
           <ControlLabel>Author</ControlLabel>
-          <FormControl id="commentAuthor"
+          <FormControl id={authorIdField}
             placeholder="Type your name"
-            onChange={this.handleChange}>
+            defaultValue={commentItem.author}
+            inputRef={ref => {this.commentAuthorInput = ref}}>
           </FormControl>
         </FormGroup>
-        <FormGroup controlId="commentText">
+        <FormGroup controlId={bodyIdField}>
           <ControlLabel>Comment text</ControlLabel>
-          <FormControl id="commentText"
+          <FormControl id={bodyIdField}
             placeholder="Type your comment"
+            defaultValue={commentItem.body}
             componentClass="textarea"
-            onChange={this.handleChange}>
+            inputRef={ref => {this.commentBodyInput = ref}}>
           </FormControl>
         </FormGroup>
-        <Button>Save</Button>
+        <Button type="submit" >Save</Button>
       </form>
     )
   }

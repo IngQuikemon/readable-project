@@ -7,8 +7,12 @@ if (!token)
   token = localStorage.token = Math.random().toString(18).substr(-8);
 const vars = {
   headers: { 'Authorization': token,
-              'Accept' : 'application/json'},
+              'Accept' : 'application/json',
+              'Content-Type': 'application/json'},
   method: 'GET'
+}
+export const idGenerator = () => {
+  return Math.random().toString(36).substring(2, 20) + Math.random().toString(36).substring(2, 15);
 }
 
 export const getCategories = () =>
@@ -35,3 +39,11 @@ export const getComments = (postId) =>
   fetch(`${api}/posts/${postId}/comments`,  vars )
   .then(res => res.json())
   .then(data => data)
+
+//Posts Methods
+export const addComment = (comment) =>
+  fetch(`${api}/comments`, {
+    ...vars,
+    method: 'POST',
+    body: JSON.stringify({ comment})
+  }).then(res => res.json())

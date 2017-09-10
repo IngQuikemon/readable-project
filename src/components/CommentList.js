@@ -3,9 +3,13 @@ import {Panel, Button, Glyphicon, Modal} from 'react-bootstrap';
 import CommentItem from './CommentItem';
 import EditCommentForm from './EditCommentForm';
 
+const editModalTitle = 'Edit comment';
+const newModalTitle = 'New comment';
 class CommentList extends Component{
   state ={
-    showModal : false
+    showModal : false,
+    commentItem : null,
+    modalTitle : ''
   }
 
   openEditModal = () => {
@@ -16,8 +20,28 @@ class CommentList extends Component{
     this.setState({showModal : false});
   }
 
+  openEditCommentDialog = (comment,parentId) => {
+    if(comment === undefined || comment === null){
+      comment = {
+        id:'',
+        parentId:parentId,
+        timestamp:'',
+        body: '',
+        author:''
+      };
+      this.setState({modalTitle:newModalTitle});
+    }
+    else{
+      this.setState({modalTitle:editModalTitle});
+    }
+    this.setState({commentItem : comment});
+    this.openEditModal();
+  }
+
+
   render(){
-    const {comments} = this.props;
+    const {comments,onLoadComments,postId,onSaveComment} = this.props;
+    console.log(onSaveComment)
     return (
       <div>
         {comments === undefined || comments.length === 0
@@ -31,23 +55,31 @@ class CommentList extends Component{
               <div className="full_width">
                 <span className="title_text">Comments:</span>
                 <span className="button_right">
-                  <Button bsStyle="link" onClick={this.openEditModal}>
+                  <Button bsStyle="link" onClick={() => {this.openEditCommentDialog(null,postId)}}>
                     <Glyphicon glyph="plus"/> Add Comment
                   </Button>
                 </span>
               </div>
               <br/>
               {comments.map((comment) => (
-                <CommentItem key={comment.id} commentItem={comment} />
+                <CommentItem
+                  key={comment.id}
+                  commentItem={comment}
+                  onEditCommentDialog={this.openEditCommentDialog}/>
               ))}
             </div>
         }
         <Modal show={this.state.showModal} onHide = {this.closeEditModal}>
           <Modal.Header closeButton>
-            <Modal.Title>New comment</Modal.Title>
+            <Modal.Title>{this.state.modalTitle}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <EditCommentForm />
+            <EditCommentForm
+              onGenerateId={this.props.onGenerateId}
+              commentItem={this.state.commentItem}
+              onSaveComment={onSaveComment}
+              onCloseEditModal = {this.closeEditModal}
+              onLoadComments={onLoadComments} />
           </Modal.Body>
         </Modal>
       </div>
