@@ -40,6 +40,9 @@ class App extends Component {
     APIInterface.getPost(filter).then((postItem) =>{
       this.setState({postItem});
     })
+    APIInterface.getComments(filter).then((comments) =>{
+      this.setState({comments});
+    })
   }
 
   render(){

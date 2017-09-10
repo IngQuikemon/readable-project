@@ -30,3 +30,8 @@ export const getPost = (id) =>
   fetch(`${api}/posts/${id}`,  vars )
   .then(res => res.json())
   .then(data => data)
+
+export const getComments = (postId) =>
+  fetch(`${api}/posts/${postId}/comments`,  vars )
+  .then(res => res.json())
+  .then(data => data)

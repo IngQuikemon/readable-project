@@ -4,7 +4,7 @@ body {
   font-family: sans-serif;
 }
 
-.blob_title_text{
+.blob_title_text, .title_text{
   font-size: 16px;
   font-weight: bold;
 }
@@ -24,7 +24,7 @@ body {
   float:right;
 }
 
-.button_menu{
+.button_right{
   float:right;
 }
 
@@ -32,4 +32,8 @@ body {
   margin-top:60px;
   padding-left:15px;
   border-left:1px solid #eee;
+}
+
+.full_width{
+  width:100%;
 }

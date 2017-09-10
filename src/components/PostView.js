@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Grid, Row, Col, PageHeader,Panel,Badge,Button} from 'react-bootstrap';
+import { Grid, Row, Col, PageHeader,Panel,Badge,Button,Jumbotron,Glyphicon} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
+import CommentList from './CommentList';
 
 class PostView extends Component{
   componentDidMount(){
@@ -26,15 +27,22 @@ class PostView extends Component{
               <div>
                 <span>posted by {postItem.author} on {postDate}. </span>
                 <span> Score:<Badge>{postItem.voteScore}</Badge></span>
-                <span className="button_menu">
-                  <Button bsStyle="link">Edit</Button>
-                  <Link to="/">Return Main</Link>
+                <span className="button_right">
+                  <Button bsStyle="link">
+                    <Glyphicon glyph="pencil"/> Edit
+                  </Button>
+                  <Link to="/">
+                    <Glyphicon glyph="home"/> Return
+                  </Link>
                 </span>
               </div>
               <br/>
-              <Panel>
+              <Jumbotron>
                 {postItem.body}
-              </Panel>
+              </Jumbotron>
+            <br/>
+            <CommentList
+              comments={comments} />
             </Col>
           </Row>
         </Grid>

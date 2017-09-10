@@ -16,7 +16,6 @@ class PostItem extends Component {
           <span className="blob_title_subtext">posted by {postItem.author} on {postDate}</span><br/>
           <span className="blob_body">{postItem.body}</span>
         </ListGroupItem>
-
     )
   }
 }
