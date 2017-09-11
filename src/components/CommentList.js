@@ -40,7 +40,7 @@ class CommentList extends Component{
 
 
   render(){
-    const {comments,onLoadComments,postId,onSaveComment,onVoteComment,onDeleteComment} = this.props;
+    const {comments,postId,onSaveComment,onVoteComment,onDeleteComment} = this.props;
     return (
       <div>
         <div className="full_width">
@@ -78,8 +78,7 @@ class CommentList extends Component{
               onGenerateId={this.props.onGenerateId}
               commentItem={this.state.commentItem}
               onSaveComment={onSaveComment}
-              onCloseEditModal = {this.closeEditModal}
-              onLoadComments={onLoadComments} />
+              onCloseEditModal = {this.closeEditModal}/>
           </Modal.Body>
         </Modal>
       </div>

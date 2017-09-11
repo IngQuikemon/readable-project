@@ -5,6 +5,7 @@ const api = "http://localhost:5001"
 let token = localStorage.token
 if (!token)
   token = localStorage.token = Math.random().toString(18).substr(-8);
+
 const vars = {
   headers: { 'Authorization': token,
               'Content-Type': 'application/json'},
@@ -64,7 +65,7 @@ export const deleteComment  = (id) =>
   fetch(`${api}/comments/${id}`, {
     ...vars,
     method: 'DELETE'
-  }).then(res => res.json())
+  })
 
 export const votePost = (id,voteValue) =>
   fetch(`${api}/posts/${id}`, {
@@ -72,3 +73,23 @@ export const votePost = (id,voteValue) =>
     method: 'POST',
     body: JSON.stringify(voteValue)
   }).then(res => res.json())
+
+export const editPost = (post,id) =>
+  fetch(`${api}/posts/${id}`, {
+    ...vars,
+    method: 'PUT',
+    body: JSON.stringify(post)
+  }).then(res => res.json())
+
+export const addPost = (post) =>
+  fetch(`${api}/posts/`, {
+    ...vars,
+    method: 'POST',
+    body: JSON.stringify(post)
+  }).then(res => res.json())
+
+export const deletePost = (id) =>
+  fetch(`${api}/posts/${id}`, {
+    ...vars,
+    method: 'DELETE'
+  })

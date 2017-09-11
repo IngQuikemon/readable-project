@@ -11,11 +11,25 @@ class App extends Component {
     postsByCategories : [],
     categories: [],
     postItem : null,
-    comments : []
+    comments : [],
+    postOrderBy : 'voteScore'
   }
   componentDidMount(){
     this.loadCategories();
     this.loadPosts();
+    this.sortPosts(this.state.posts);
+  }
+
+  setSortBy = (orderBy) => {
+    this.setState({postOrderBy:orderBy});
+  }
+
+  sortPosts = (posts) => {
+    let orderBy = this.state.postOrderBy;
+    posts.sort((a,b) =>{
+      return b[orderBy] - a[orderBy];
+    });
+    this.setState({posts:posts});
   }
 
   loadCategories = () => {
@@ -26,8 +40,37 @@ class App extends Component {
 
   loadPosts = () => {
     APIInterface.getPosts().then((posts) => {
+      posts = posts.filter(x => {return x.deleted === false;})
       this.setState({posts});
     });
+  }
+
+  addPost = (post) => {
+    let postValue = null;
+    if(post.id === ''){
+      postValue = {
+        id : APIInterface.idGenerator(),
+        title: post.title,
+        timestamp :post.timestamp,
+        author : post.author,
+        body : post.body
+      };
+      APIInterface.addPost(postValue);
+      this.loadPosts();
+    }else{
+      postValue ={
+        title:post.title,
+        body : post.body,
+        timestamp : post.timestamp
+      }
+      APIInterface.editPost(postValue,post.id);
+      this.loadPostItem(post.id);
+    }
+  }
+
+  deletePost = (post) => {
+    APIInterface.deletePost(post.id);
+    this.loadPosts();
   }
 
   loadPostsByCategory = (filter) => {
@@ -90,31 +133,37 @@ class App extends Component {
   render(){
     return(
       <div>
-        <Route exact path="/" render={() =>(
-            <AllPosts categories={this.state.categories}
-              posts={this.state.posts}
-              onVotePost={this.votePost} />
+          <Route exact path="/" render={() =>(
+              <AllPosts categories={this.state.categories}
+                posts={this.state.posts}
+                onSortPosts={this.sortPosts}
+                onSetSortBy={this.setSortBy}
+                sortBy = {this.state.postOrderBy}
+                onVotePost={this.votePost}
+                onSavePost={this.addPost}/>
+            )} />
+          <Route exact path="/filtered/:category" render={props => (
+              <FilteredCategories
+                posts={this.state.postsByCategories}
+                onLoadByCategory = {this.loadPostsByCategory}
+                {...props}
+                />
+            )} />
+          <Route path="/posts/:id" render={props =>(
+              <PostView
+                postItem = {this.state.postItem}
+                comments = {this.state.comments}
+                onLoadPostItem = {this.loadPostItem}
+                onLoadComments = {this.loadComments}
+                onGenerateId={APIInterface.idGenerator}
+                onSaveComment={this.addComment}
+                onVoteComment={this.voteComment}
+                onDeleteComment={this.deleteComment}
+                onVotePost={this.votePost}
+                onDeletePost={this.deletePost}
+                onSavePost={this.addPost}
+                {...props}/>
           )} />
-        <Route exact path="/filtered/:category" render={props => (
-            <FilteredCategories
-              posts={this.state.postsByCategories}
-              onLoadByCategory = {this.loadPostsByCategory}
-              {...props}
-              />
-          )} />
-        <Route path="/posts/:id" render={props =>(
-            <PostView
-              postItem = {this.state.postItem}
-              comments = {this.state.comments}
-              onLoadPostItem = {this.loadPostItem}
-              onLoadComments = {this.loadComments}
-              onGenerateId={APIInterface.idGenerator}
-              onSaveComment={this.addComment}
-              onVoteComment={this.voteComment}
-              onDeleteComment={this.deleteComment}
-              onVotePost={this.votePost}
-              {...props}/>
-        )} />
       </div>
     )
   }
