@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Route} from 'react-router-dom';
+import {connect} from 'react-redux';
 import AllPosts from './AllPosts';
 import FilteredCategories from './FilteredCategories';
 import PostView from './PostView';
@@ -7,7 +8,6 @@ import * as APIInterface from '../utils/APIInterface'
 
 class App extends Component {
   state = {
-    posts : [],
     postsByCategories : [],
     categories: [],
     postItem : null,
@@ -15,9 +15,7 @@ class App extends Component {
     postOrderBy : 'voteScore'
   }
   componentDidMount(){
-    this.loadCategories();
-    this.loadPosts();
-    this.sortPosts(this.state.posts);
+
   }
 
   setSortBy = (orderBy) => {
@@ -39,10 +37,7 @@ class App extends Component {
   }
 
   loadPosts = () => {
-    APIInterface.getPosts().then((posts) => {
-      posts = posts.filter(x => {return x.deleted === false;})
-      this.setState({posts});
-    });
+    return APIInterface.getPosts().filter((post) => post.deleted === false);
   }
 
   addPost = (post) => {
@@ -169,4 +164,20 @@ class App extends Component {
   }
 }
 
-export default App
+function mapStateToProps (state){
+  return{
+    posts : loadPosts()
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    add: (data) => dispatch(addPost(data)),
+    edit: (data) => dispatch(editPost(data)),
+    delete: (data) => dispatch(deletePost(data)),
+    vote: (data) => dispatch(votePost(data))
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
