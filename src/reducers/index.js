@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import {
   POSTS_FILTER,
+  LOAD_POSTS,
   ADD_POST,
   EDIT_POST,
   DELETE_POST,
@@ -9,19 +10,22 @@ import {
   EDIT_COMMENT,
   DELETE_COMMENT,
   VOTE_COMMENT
-} from '../actions'
+} from '../actions';
 
-function post (state = {}, action){
-  const {post} = action;
+
+
+function post (state = [], action){
+  const {post,posts} = action;
   switch(action.type){
+    case LOAD_POSTS:
+      return state.concat(posts);
+
     case ADD_POST:
-      return {
-        ...state,
-        post
-      };
+      return state.concat(post);
+      /*
     case EDIT_POST:
       return {
-        state.map((postItem) =>
+        state.posts.map((postItem) =>
         {
           if(postItem.id === post.id){
             return({
@@ -36,10 +40,10 @@ function post (state = {}, action){
       };
     case DELETE_POST:
       return {
-        state.filter( postItem => postItem.id !== post.id )
+        state.posts.filter( postItem => postItem.id !== post.id )
       };
     case VOTE_POST:
-      return {state.map( postItem => {
+      return {state.posts.map( postItem => {
         if(postItem.id === post.id){
           return({
             ...postItem,
@@ -47,6 +51,7 @@ function post (state = {}, action){
           })
         }
       })};
+      */
     default:
       return state;
   }
@@ -54,12 +59,14 @@ function post (state = {}, action){
 
 function comment (state = {}, action){
   const {comment} = action;
+
   switch(action.type) {
     case ADD_COMMENT:
       return {
         ...state,
         comment,
       }
+      /*
     case EDIT_COMMENTT:
       return {state.map( commentItem =>{
         if(postItem.id === post.id){
@@ -85,7 +92,13 @@ function comment (state = {}, action){
           }
         })}
       }
+      */
     default:
       return state;
   }
 }
+
+export default combineReducers({
+  post,
+  comment,
+})

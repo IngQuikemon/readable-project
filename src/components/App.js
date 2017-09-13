@@ -5,6 +5,7 @@ import AllPosts from './AllPosts';
 import FilteredCategories from './FilteredCategories';
 import PostView from './PostView';
 import * as APIInterface from '../utils/APIInterface'
+import {loadPosts,addPost, editPost, deletePost,votePost} from '../actions';
 
 class App extends Component {
   state = {
@@ -15,7 +16,14 @@ class App extends Component {
     postOrderBy : 'voteScore'
   }
   componentDidMount(){
+    this.loadPosts();
+  }
 
+  loadPosts = () => {
+    APIInterface.getPosts().then((posts) =>{
+      let postsResponse = posts.filter((post) => post.deleted === false);
+      this.props.load(postsResponse);
+    });
   }
 
   setSortBy = (orderBy) => {
@@ -36,9 +44,7 @@ class App extends Component {
     });
   }
 
-  loadPosts = () => {
-    return APIInterface.getPosts().filter((post) => post.deleted === false);
-  }
+
 
   addPost = (post) => {
     let postValue = null;
@@ -50,8 +56,8 @@ class App extends Component {
         author : post.author,
         body : post.body
       };
-      APIInterface.addPost(postValue);
-      this.loadPosts();
+      APIInterface.addPost(postValue).then((post) => this.props.add(post));
+      //this.loadPosts();
     }else{
       postValue ={
         title:post.title,
@@ -126,11 +132,12 @@ class App extends Component {
   }
 
   render(){
+    const {post} = this.props;
     return(
       <div>
           <Route exact path="/" render={() =>(
               <AllPosts categories={this.state.categories}
-                posts={this.state.posts}
+                posts={post}
                 onSortPosts={this.sortPosts}
                 onSetSortBy={this.setSortBy}
                 sortBy = {this.state.postOrderBy}
@@ -164,14 +171,16 @@ class App extends Component {
   }
 }
 
+
 function mapStateToProps (state){
   return{
-    posts : loadPosts()
+    post : []
   }
 }
 
 function mapDispatchToProps(dispatch){
   return {
+    load: (data) => dispatch(loadPosts(data)),
     add: (data) => dispatch(addPost(data)),
     edit: (data) => dispatch(editPost(data)),
     delete: (data) => dispatch(deletePost(data)),
