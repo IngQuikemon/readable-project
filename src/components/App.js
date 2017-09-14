@@ -15,7 +15,7 @@ class App extends Component {
     comments : [],
     postOrderBy : 'voteScore'
   }
-  componentDidMount(){
+  componentWillMount(){
     this.loadPosts();
   }
 
@@ -132,12 +132,13 @@ class App extends Component {
   }
 
   render(){
-    const {post} = this.props;
+    const {posts} = this.props;
+    console.log(this.props);
     return(
       <div>
           <Route exact path="/" render={() =>(
               <AllPosts categories={this.state.categories}
-                posts={post}
+                posts={posts}
                 onSortPosts={this.sortPosts}
                 onSetSortBy={this.setSortBy}
                 sortBy = {this.state.postOrderBy}
@@ -172,9 +173,9 @@ class App extends Component {
 }
 
 
-function mapStateToProps (state){
+function mapStateToProps ({state}){
   return{
-    post : []
+    posts : state
   }
 }
 

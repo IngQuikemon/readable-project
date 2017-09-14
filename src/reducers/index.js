@@ -14,14 +14,15 @@ import {
 
 
 
-function post (state = [], action){
+function posts (state = [], action){
   const {post,posts} = action;
+  console.log(posts);
   switch(action.type){
     case LOAD_POSTS:
       return state.concat(posts);
 
     case ADD_POST:
-      return state.concat(post);
+      return [...state,post];
       /*
     case EDIT_POST:
       return {
@@ -99,6 +100,6 @@ function comment (state = {}, action){
 }
 
 export default combineReducers({
-  post,
+  posts,
   comment,
 })

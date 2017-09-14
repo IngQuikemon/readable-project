@@ -23,10 +23,10 @@ export function loadPosts(posts){
   }
 }
 
-export function addPost({post}){
+export function addPost(post){
   return{
     type: ADD_POST,
-    post,
+    post:post,
   }
 }
 
