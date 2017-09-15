@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import {Panel, Button, Glyphicon, Modal} from 'react-bootstrap';
+import {withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
 import CommentItem from './CommentItem';
 import EditCommentForm from './EditCommentForm';
+import * as APIInterface from '../utils/APIInterface';
 
 const editModalTitle = 'Edit comment';
 const newModalTitle = 'New comment';
@@ -41,6 +44,7 @@ class CommentList extends Component{
 
   render(){
     const {comments,postId,onSaveComment,onVoteComment,onDeleteComment} = this.props;
+    console.log(comments);
     return (
       <div>
         <div className="full_width">
@@ -86,4 +90,4 @@ class CommentList extends Component{
   }
 }
 
-export default CommentList
+export default CommentList;

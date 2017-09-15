@@ -93,4 +93,4 @@ export const deletePost = (id) =>
   fetch(`${api}/posts/${id}`, {
     ...vars,
     method: 'DELETE'
-  })
+  }).then(res => res.json())

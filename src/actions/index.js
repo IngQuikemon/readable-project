@@ -5,11 +5,13 @@ export const ADD_POST = 'ADD_POST';
 export const EDIT_POST = 'EDIT_POST';
 export const DELETE_POST = 'DELETE_POST';
 export const VOTE_POST = 'VOTE_POST';
+export const LOAD_COMMENTS = 'LOAD_COMMENTS';
 export const ADD_COMMENT = 'ADD_COMMENT';
 export const EDIT_COMMENT = 'EDIT_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const VOTE_COMMENT = 'VOTE_COMMENT';
 export const LOAD_CATEGORIES = 'LOAD_CATEGORIES';
+export const LOAD_POST_ITEM = 'LOAD_POST_ITEM';
 
 export function postFilter({categoryFilter}){
   return {
@@ -40,14 +42,14 @@ export function addPost(post){
   }
 }
 
-export function editPost({post}){
+export function editPost(post){
   return{
     type: EDIT_POST,
     post,
   }
 }
 
-export function deletePost({post}){
+export function deletePost(post){
   return{
     type: DELETE_POST,
     post,
@@ -61,15 +63,32 @@ export function votePost(post){
   }
 }
 
-export function addComment({comment}){
+export function loadPostItem({post,comments}){
   return{
-    type: ADD_COMMENT,
+    type: LOAD_POST_ITEM,
+    post:post,
+    comments:comments,
   }
 }
 
-export function editComment({comment}){
+export function loadComments(comments){
+  return {
+    type:LOAD_COMMENTS,
+    comments:comments,
+  }
+}
+
+export function addComment(comment){
+  return{
+    type: ADD_COMMENT,
+    comment:comment,
+  }
+}
+
+export function editComment(comment){
   return{
     type: EDIT_COMMENT,
+    comment:comment,
   }
 }
 

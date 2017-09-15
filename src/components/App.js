@@ -71,27 +71,6 @@ class App extends Component {
     })
   }
 
-  addComment = (comment,commentId,parentId) => {
-    let commentValue = null;
-    if(comment.id === ''){
-      commentValue = {
-        id : APIInterface.idGenerator(),
-        parentId : parentId,
-        timestamp :comment.timestamp,
-        author : comment.author,
-        body : comment.body
-      };
-      APIInterface.addComment(commentValue);
-    }else{
-      commentValue ={
-        body : comment.body,
-        timestamp : comment.timestamp
-      }
-      APIInterface.editComment(commentValue,commentId);
-    }
-    this.loadPostItem(parentId);
-  }
-
   deleteComment = (comment) => {
     APIInterface.deleteComment(comment.id);
     this.loadPostItem(comment.parentId);

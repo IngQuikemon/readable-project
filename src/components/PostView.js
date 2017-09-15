@@ -4,28 +4,37 @@ import {connect} from 'react-redux';
 import {Link,withRouter} from 'react-router-dom';
 import CommentList from './CommentList';
 import EditPostForm from './EditPostForm';
+import {editPost,loadPostItem,votePost,deletePost} from '../actions';
+import * as APIInterface from '../utils/APIInterface';
 
 const upVoteValue = 'upVote';
 const downVoteValue = 'downVote';
 const editModalTitle = 'Edit post';
-const newModalTitle = 'New post';
 
 class PostView extends Component{
   state = {
     showModal:false,
-    modalTitle:'',
-    postItem:null
+    modalTitle:''
   }
   componentWillMount(){
     this.loadPost(this.props.match.params.id);
   }
 
   loadPost = filter =>{
-    this.setState({postItem : this.props.posts.find(x => x.id === filter)});
+    APIInterface.getPost(filter).then((post) => {
+      APIInterface.getComments(filter).then((comments) => {
+        this.props.loadPostItem({
+          post:post,
+          comments:comments
+        });
+      });
+    });
   }
 
   vote = (postItem,voteValue,source) => {
-    this.props.onVotePost(postItem,voteValue,source);
+    APIInterface.votePost(postItem.id, voteValue).then((postItem)=>{
+      this.props.votePostItem(postItem);
+    });
   }
 
   openEditModal = () => {
@@ -36,54 +45,43 @@ class PostView extends Component{
   }
 
   openEditPostDialog = (post) => {
-    console.log(post);
-    if(post === undefined || post === null){
-      post = {
-        id:'',
-        title:'',
-        timestamp:'',
-        body: '',
-        author:''
-      };
-      this.setState({modalTitle:newModalTitle});
-    }
-    else{
-      this.setState({modalTitle:editModalTitle});
-    }
+    this.setState({modalTitle:editModalTitle});
     this.setState({postItem : post});
     this.openEditModal();
   }
 
   deletePost = (post) => {
-    this.props.onDeletePost(post);
-    this.props.history.push('/');
+    APIInterface.deletePost(post.id).then((postReponse) =>{
+      this.props.deletePostItem(postReponse);
+      this.props.history.push('/');
+    });
   }
 
   render(){
-    const {postItem, comments, onLoadComments,onVoteComment,onDeleteComment,onSavePost} = this.props;
+    const {post,onLoadComments,onVoteComment,onDeleteComment} = this.props;
     let dateToParse;
     let postDate;
-    if(postItem !== null){
-      dateToParse = new Date(postItem.timestamp);
+    if(post.postItem !== null){
+      dateToParse = new Date(post.postItem.timestamp);
       postDate = dateToParse.getMonth() + '/' + dateToParse.getDay() + '/' + dateToParse.getFullYear();
       return(
         <div>
           <Grid>
             <Row className="show-grid">
               <Col md={12}>
-                <PageHeader> {postItem.title} </PageHeader>
+                <PageHeader> {post.postItem.title} </PageHeader>
                 <div>
-                  <span>posted by {postItem.author} on {postDate}. </span>
+                  <span>posted by {post.postItem.author} on {postDate}. </span>
                   <span>
-                    Score: <Badge>{postItem.voteScore}</Badge>
+                    Score: <Badge>{post.postItem.voteScore}</Badge>
                     <Button
                       bsStyle="link"
-                      onClick={() => this.vote(postItem,{option:upVoteValue},'item')}>
+                      onClick={() => this.vote(post.postItem,{option:upVoteValue},'item')}>
                       <Glyphicon glyph="thumbs-up"/>
                     </Button>
                     <Button
                       bsStyle="link"
-                      onClick={() =>  this.vote(postItem,{option:downVoteValue},'item')}>
+                      onClick={() =>  this.vote(post.postItem,{option:downVoteValue},'item')}>
                       <Glyphicon glyph="thumbs-down"/>
                     </Button>
                   </span>
@@ -93,27 +91,27 @@ class PostView extends Component{
                     </Link>
                     &nbsp;
                     &nbsp;
-                    <Button bsStyle="default" onClick={() => {this.openEditPostDialog(postItem)}}>
+                    <Button bsStyle="default" onClick={() => {this.openEditPostDialog(post.postItem)}}>
                       <Glyphicon glyph="pencil"/> Edit
                     </Button>
-                    <Button bsStyle="danger" onClick={() => {this.deletePost(postItem)}}>
+                    <Button bsStyle="danger" onClick={() => {this.deletePost(post.postItem)}}>
                       <Glyphicon glyph="trash"/> Delete
                     </Button>
                   </span>
                 </div>
                 <br/>
                 <Jumbotron>
-                  {postItem.body}
+                  {post.postItem.body}
                 </Jumbotron>
               <br/>
               <CommentList
-                postId={postItem.id}
+                postId={post.postItem.id}
                 onGenerateId={this.props.onGenerateId}
                 onSaveComment={this.props.onSaveComment}
                 onVoteComment={onVoteComment}
                 onLoadComments = {onLoadComments}
                 onDeleteComment={onDeleteComment}
-                comments={comments} />
+                comments={post.comments} />
               </Col>
             </Row>
           </Grid>
@@ -123,9 +121,7 @@ class PostView extends Component{
             </Modal.Header>
             <Modal.Body>
               <EditPostForm
-                onGenerateId={this.props.onGenerateId}
-                postItem={this.state.postItem}
-                onSavePost={onSavePost}
+                postItem={this.props.post.postItem}
                 onCloseEditModal = {this.closeEditModal} />
             </Modal.Body>
           </Modal>
@@ -142,8 +138,19 @@ class PostView extends Component{
 }
 
 function mapStateToProps (state){
-  return {posts:state.posts};
+  return {
+    post:state.post
+  };
 }
 
-let ReducedComponent= connect(mapStateToProps)(PostView);
+function mapDispatchToProps(dispatch){
+  return {
+    editPostItem: (data) => dispatch(editPost(data)),
+    votePostItem: (data) => dispatch(votePost(data)),
+    loadPostItem: (data) => dispatch(loadPostItem(data)),
+    deletePostItem: (data) => dispatch(deletePost(data))
+  };
+}
+
+let ReducedComponent= connect(mapStateToProps,mapDispatchToProps)(PostView);
 export default withRouter(ReducedComponent)

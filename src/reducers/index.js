@@ -11,7 +11,9 @@ import {
   EDIT_COMMENT,
   DELETE_COMMENT,
   VOTE_COMMENT,
-  LOAD_CATEGORIES
+  LOAD_CATEGORIES,
+  LOAD_POST_ITEM,
+  LOAD_COMMENTS
 } from '../actions';
 
 const postsInitialValue = {
@@ -50,35 +52,39 @@ function posts (state = postsInitialValue, action){
         list:voteResponse.sort(sortFunction)
       };
     case SORT_POSTS:
-      return sortBy === state.sortBy
+      return (sortBy === state.sortBy
         ? state
         : {
           list: [...state.list].sort((a,b) =>
             {return a[sortBy] < b[sortBy]}),
           sortBy:sortBy
           }
-      /*
+        )
     case EDIT_POST:
       return {
-        state.posts.map((postItem) =>
+        ...state,
+        list:state.list.map((postItem) =>
         {
           if(postItem.id === post.id){
-            return({
+            return{
               ...postItem,
               title: post.title,
               body : post.body,
               category: post.category,
               timestamp : post.timestamp,
-            })
+            };
+          }else{
+            return postItem;
           }
         })
       };
     case DELETE_POST:
       return {
-        state.posts.filter( postItem => postItem.id !== post.id )
+        ...state,
+        list: state.list.filter((postItem) =>{
+          return postItem.id !== post.id;
+        })
       };
-
-      */
     default:
       return state;
   }
@@ -93,14 +99,48 @@ function categories (state = [],action){
   }
 }
 
-function comment (state = {}, action){
-  const {comment} = action;
+const initialPostValue ={
+  postItem:null,
+  comments: []
+}
+
+function post (state = initialPostValue, action){
+  const {post,comments,comment} = action;
 
   switch(action.type) {
+    case LOAD_POST_ITEM:
+      return {
+        //...state,
+        postItem : post,
+        comments: comments
+      }
+    case LOAD_COMMENTS:
+      return{
+        ...state,
+        comments:comments
+      }
+    case EDIT_POST:
+      return {
+        ...state,
+        postItem: post
+      }
+    case VOTE_POST:
+      return{
+        ...state,
+        postItem: {
+          ...state.postItem,
+          voteScore:post.voteScore
+        }
+      }
     case ADD_COMMENT:
       return {
         ...state,
-        comment,
+        comments: [...state.comments,comment],
+      }
+    case DELETE_POST:
+      return{
+        postItem:null,
+        comments:[]
       }
       /*
     case EDIT_COMMENTT:
@@ -136,5 +176,5 @@ function comment (state = {}, action){
 
 export default combineReducers({
   posts,
-  comment,
+  post,
 })

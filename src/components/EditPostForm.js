@@ -6,6 +6,7 @@ import {addPost,editPost} from '../actions';
 
 const authorField = 'postAuthorField';
 const bodyField = 'postBodyField';
+const categoryField ='categoryField';
 const idField = 'postIdField';
 const titleField = 'postTitleField';
 
@@ -16,6 +17,7 @@ class EditPostForm extends Component{
       title:this.postTitleInput.value,
       author: this.postAuthorInput.value,
       body:this.postBodyInput.value,
+      category: this.postCategoryInput.value,
       timestamp:(new Date()).getTime()
     });
     this.props.onCloseEditModal();
@@ -29,6 +31,7 @@ class EditPostForm extends Component{
         id : APIInterface.idGenerator(),
         title: post.title,
         timestamp :post.timestamp,
+        category: post.category,
         author : post.author,
         body : post.body
       };
@@ -37,10 +40,10 @@ class EditPostForm extends Component{
       postValue ={
         title:post.title,
         body : post.body,
+        category:post.category,
         timestamp : post.timestamp
       }
       APIInterface.editPost(postValue,post.id).then((post) => this.props.edit(post));
-      this.loadPostItem(post.id);
     }
   }
 
@@ -70,6 +73,18 @@ class EditPostForm extends Component{
             defaultValue={postItem.author}
             inputRef={(ref) => {this.postAuthorInput = ref}}>
           </FormControl>
+        </FormGroup>
+        <FormGroup controlId={categoryField}>
+          <ControlLabel>Category</ControlLabel>
+            <FormControl
+              componentClass="select"
+              onChange={this.orderPost}
+              defaultValue={postItem.category}
+              inputRef={(ref)=>{this.postCategoryInput = ref}}>
+              <option value="react">React</option>
+              <option value="redux">Redux</option>
+              <option value="udacity">Udacity</option>
+            </FormControl>
         </FormGroup>
         <FormGroup controlId={bodyField}>
           <ControlLabel>Comment text</ControlLabel>

@@ -1,5 +1,8 @@
 import React,{Component} from 'react';
 import {Button,FormControl,FormGroup,ControlLabel} from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {addComment,editComment} from '../actions';
+import * as APIInterface from '../utils/APIInterface';
 
 const authorIdField = 'commentAuthor';
 const bodyIdField = 'commentText';
@@ -8,7 +11,7 @@ const commentIdField = 'commentId';
 
 class EditForm extends Component{
   handleSubmit = (event) => {
-    this.props.onSaveComment({
+    this.addComment({
       id:this.commentIdInput.value,
       parentId:this.parentIdInput.value,
       author: this.commentAuthorInput.value,
@@ -19,6 +22,30 @@ class EditForm extends Component{
     this.parentIdInput.value);
     this.props.onCloseEditModal();
     event.preventDefault();
+  }
+
+  addComment = (comment,commentId,parentId) => {
+    let commentValue = null;
+    if(comment.id === ''){
+      commentValue = {
+        id : APIInterface.idGenerator(),
+        parentId : parentId,
+        timestamp :comment.timestamp,
+        author : comment.author,
+        body : comment.body
+      };
+      APIInterface.addComment(commentValue).then((comment) =>{
+          this.props.add(comment);
+      });
+    }else{
+      commentValue ={
+        body : comment.body,
+        timestamp : comment.timestamp
+      }
+      APIInterface.editComment(commentValue,commentId).then((comment) =>{
+        this.props.edit(comment);
+      });
+    }
   }
 
   render(){
@@ -58,4 +85,11 @@ class EditForm extends Component{
   }
 }
 
-export default EditForm;
+function mapDispatchToProps(dispatch){
+  return {
+    add: (data) => dispatch(addComment(data)),
+    edit: (data) => dispatch(editComment(data))
+  }
+}
+
+export default connect(null,mapDispatchToProps)(EditForm);
