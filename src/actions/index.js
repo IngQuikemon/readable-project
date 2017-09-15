@@ -1,4 +1,5 @@
 export const POSTS_FILTER = 'POSTS_FILTER';
+export const SORT_POSTS = 'SORT_POSTS';
 export const LOAD_POSTS = 'LOAD_POSTS';
 export const ADD_POST = 'ADD_POST';
 export const EDIT_POST = 'EDIT_POST';
@@ -8,6 +9,7 @@ export const ADD_COMMENT = 'ADD_COMMENT';
 export const EDIT_COMMENT = 'EDIT_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const VOTE_COMMENT = 'VOTE_COMMENT';
+export const LOAD_CATEGORIES = 'LOAD_CATEGORIES';
 
 export function postFilter({categoryFilter}){
   return {
@@ -16,10 +18,18 @@ export function postFilter({categoryFilter}){
   }
 }
 
-export function loadPosts(posts){
+export function postSort(sortingBy){
+  return{
+    type:SORT_POSTS,
+    sortBy: sortingBy
+  }
+}
+
+export function loadPosts({posts,sortingBy}){
   return{
     type:LOAD_POSTS,
     posts:posts,
+    sortBy: sortingBy
   }
 }
 
@@ -44,10 +54,10 @@ export function deletePost({post}){
   }
 }
 
-export function votePost({post}){
+export function votePost(post){
   return{
     type: VOTE_POST,
-    post,
+    post:post,
   }
 }
 
@@ -72,5 +82,12 @@ export function deleteComment({comment}){
 export function voteComment({comment}){
   return{
     type: VOTE_COMMENT,
+  }
+}
+
+export function loadCategories(categories){
+  return{
+    type: LOAD_CATEGORIES,
+    categories:categories,
   }
 }

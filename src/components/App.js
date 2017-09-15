@@ -1,29 +1,29 @@
 import React, {Component} from 'react';
-import {Route} from 'react-router-dom';
+import {Route,withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import AllPosts from './AllPosts';
 import FilteredCategories from './FilteredCategories';
 import PostView from './PostView';
-import * as APIInterface from '../utils/APIInterface'
-import {loadPosts,addPost, editPost, deletePost,votePost} from '../actions';
+import * as APIInterface from '../utils/APIInterface';
+import {loadPosts,votePost} from '../actions';
 
 class App extends Component {
   state = {
     postsByCategories : [],
     categories: [],
     postItem : null,
-    comments : [],
-    postOrderBy : 'voteScore'
+    comments : []
   }
   componentWillMount(){
-    this.loadPosts();
+    this.initialize();
   }
 
-  loadPosts = () => {
+  initialize = () => {
     APIInterface.getPosts().then((posts) =>{
       let postsResponse = posts.filter((post) => post.deleted === false);
-      this.props.load(postsResponse);
+      this.props.load({posts:postsResponse,sortingBy:'voteScore'});
     });
+    this.loadCategories();
   }
 
   setSortBy = (orderBy) => {
@@ -44,31 +44,6 @@ class App extends Component {
     });
   }
 
-
-
-  addPost = (post) => {
-    let postValue = null;
-    if(post.id === ''){
-      postValue = {
-        id : APIInterface.idGenerator(),
-        title: post.title,
-        timestamp :post.timestamp,
-        author : post.author,
-        body : post.body
-      };
-      APIInterface.addPost(postValue).then((post) => this.props.add(post));
-      //this.loadPosts();
-    }else{
-      postValue ={
-        title:post.title,
-        body : post.body,
-        timestamp : post.timestamp
-      }
-      APIInterface.editPost(postValue,post.id);
-      this.loadPostItem(post.id);
-    }
-  }
-
   deletePost = (post) => {
     APIInterface.deletePost(post.id);
     this.loadPosts();
@@ -85,11 +60,6 @@ class App extends Component {
       this.setState({postItem});
     })
     this.loadComments(filter);
-  }
-
-  votePost = (postItem,voteValue,source) => {
-    APIInterface.votePost(postItem.id,voteValue);
-    source === 'item' ? this.loadPostItem(postItem.id) : this.loadPosts();
   }
 
   loadComments = (filter) => {
@@ -132,18 +102,14 @@ class App extends Component {
   }
 
   render(){
-    const {posts} = this.props;
-    console.log(this.props);
     return(
       <div>
           <Route exact path="/" render={() =>(
               <AllPosts categories={this.state.categories}
-                posts={posts}
                 onSortPosts={this.sortPosts}
                 onSetSortBy={this.setSortBy}
                 sortBy = {this.state.postOrderBy}
-                onVotePost={this.votePost}
-                onSavePost={this.addPost}/>
+                onVotePost={this.votePost}/>
             )} />
           <Route exact path="/filtered/:category" render={props => (
               <FilteredCategories
@@ -156,13 +122,11 @@ class App extends Component {
               <PostView
                 postItem = {this.state.postItem}
                 comments = {this.state.comments}
-                onLoadPostItem = {this.loadPostItem}
                 onLoadComments = {this.loadComments}
                 onGenerateId={APIInterface.idGenerator}
                 onSaveComment={this.addComment}
                 onVoteComment={this.voteComment}
                 onDeleteComment={this.deleteComment}
-                onVotePost={this.votePost}
                 onDeletePost={this.deletePost}
                 onSavePost={this.addPost}
                 {...props}/>
@@ -172,22 +136,12 @@ class App extends Component {
   }
 }
 
-
-function mapStateToProps ({state}){
-  return{
-    posts : state
-  }
-}
-
 function mapDispatchToProps(dispatch){
   return {
     load: (data) => dispatch(loadPosts(data)),
-    add: (data) => dispatch(addPost(data)),
-    edit: (data) => dispatch(editPost(data)),
-    delete: (data) => dispatch(deletePost(data)),
     vote: (data) => dispatch(votePost(data))
   }
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default withRouter(connect(null, mapDispatchToProps)(App))

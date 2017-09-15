@@ -1,8 +1,10 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import { Grid, Row, Col, PageHeader,Button,Glyphicon,FormControl,Modal} from 'react-bootstrap';
+import {connect} from 'react-redux';
 import PostList from './PostList';
 import CategoriesList from './CategoriesList';
 import EditPostForm from './EditPostForm';
+import {postSort} from '../actions';
 
 const editModalTitle = 'Edit post';
 const newModalTitle = 'New post';
@@ -14,8 +16,7 @@ class AllPosts extends Component{
     postItem:null
   }
   orderPost = (event) => {
-    this.props.onSetSortBy(event.target.value);
-    this.props.onSortPosts(this.props.posts);
+    this.props.sortListBy(event.target.value);
   }
   openEditModal = () => {
     this.setState({showModal:true});
@@ -43,7 +44,7 @@ class AllPosts extends Component{
   }
 
   render(){
-    const {categories,posts,onVotePost,orderBy,onSavePost} = this.props;
+    const {categories,posts} = this.props;
     return(
       <div>
         <Grid>
@@ -55,7 +56,7 @@ class AllPosts extends Component{
                   <Glyphicon glyph="plus"/> Add new post
                 </Button>
                 <span className="button_right">
-                  <FormControl componentClass="select" onChange={this.orderPost} value={orderBy}>
+                  <FormControl componentClass="select" onChange={this.orderPost} value={posts.sortBy}>
                     <option value="voteScore">Vote Score</option>
                     <option value="timestamp">Date Posted</option>
                   </FormControl>
@@ -65,7 +66,7 @@ class AllPosts extends Component{
                 </span>
               </div>
               <br/>
-              <PostList onVotePost={onVotePost} posts={posts}/>
+              <PostList/>
             </Col>
             <Col md={2}>
               <CategoriesList categories={categories} />
@@ -80,7 +81,6 @@ class AllPosts extends Component{
             <EditPostForm
               onGenerateId={this.props.onGenerateId}
               postItem={this.state.postItem}
-              onSavePost={onSavePost}
               onCloseEditModal = {this.closeEditModal} />
           </Modal.Body>
         </Modal>
@@ -88,5 +88,14 @@ class AllPosts extends Component{
     );
   }
 }
-
-export default AllPosts
+function mapStateToProps (state){
+  return{
+    posts : state
+  }
+}
+function mapDispatchToProps(dispatch){
+  return {
+    sortListBy: (data) => dispatch(postSort(data))
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(AllPosts)

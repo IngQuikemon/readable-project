@@ -1,6 +1,7 @@
-import React,{Component} from 'react'
-import {Panel} from 'react-bootstrap'
-import PostItem from './PostItem'
+import React,{Component} from 'react';
+import {connect} from 'react-redux';
+import {Panel} from 'react-bootstrap';
+import PostItem from './PostItem';
 
 class PostList extends Component{
   render(){
@@ -13,7 +14,7 @@ class PostList extends Component{
             No posts found yet. Come on and start posting.
           </Panel>
         : <div>
-            {posts.map((post) => (
+            {posts.list.map((post) => (
               <PostItem
                 key={post.id}
                 postItem={post}
@@ -25,5 +26,7 @@ class PostList extends Component{
     );
   }
 }
-
-export default PostList
+function mapStateToProps (state){
+  return {posts:state.posts};
+}
+export default connect(mapStateToProps)(PostList)

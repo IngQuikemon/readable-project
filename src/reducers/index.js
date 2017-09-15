@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import {
   POSTS_FILTER,
+  SORT_POSTS,
   LOAD_POSTS,
   ADD_POST,
   EDIT_POST,
@@ -9,20 +10,53 @@ import {
   ADD_COMMENT,
   EDIT_COMMENT,
   DELETE_COMMENT,
-  VOTE_COMMENT
+  VOTE_COMMENT,
+  LOAD_CATEGORIES
 } from '../actions';
 
+const postsInitialValue = {
+  list: [],
+  sortBy: 'voteScore'
+}
 
-
-function posts (state = [], action){
-  const {post,posts} = action;
-  console.log(posts);
+function posts (state = postsInitialValue, action){
+  const {post,posts,sortBy} = action;
+  const sortFunction = (a,b) => {return a[state.sortBy] < b[state.sortBy]};
   switch(action.type){
     case LOAD_POSTS:
-      return state.concat(posts);
-
+      let loadResponse = [...state.list,...posts];
+      return {
+        ...state,
+        list:loadResponse.sort(sortFunction)
+      };
     case ADD_POST:
-      return [...state,post];
+      return {
+        ...state,
+        list:[...state.list,post].sort(sortFunction)
+      };
+    case VOTE_POST:
+      let voteResponse =state.list.map(postItem => {
+        if(postItem.id === post.id){
+          return({
+            ...postItem,
+            voteScore : post.voteScore,
+          });
+        }else{
+          return postItem;
+        }
+      });
+      return {
+        ...state,
+        list:voteResponse.sort(sortFunction)
+      };
+    case SORT_POSTS:
+      return sortBy === state.sortBy
+        ? state
+        : {
+          list: [...state.list].sort((a,b) =>
+            {return a[sortBy] < b[sortBy]}),
+          sortBy:sortBy
+          }
       /*
     case EDIT_POST:
       return {
@@ -43,16 +77,17 @@ function posts (state = [], action){
       return {
         state.posts.filter( postItem => postItem.id !== post.id )
       };
-    case VOTE_POST:
-      return {state.posts.map( postItem => {
-        if(postItem.id === post.id){
-          return({
-            ...postItem,
-            voteScore : post.voteScore,
-          })
-        }
-      })};
+
       */
+    default:
+      return state;
+  }
+}
+
+function categories (state = [],action){
+  switch (action.type) {
+    case LOAD_CATEGORIES:
+      return [...state,action.categories];
     default:
       return state;
   }

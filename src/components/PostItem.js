@@ -1,14 +1,20 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {ListGroupItem, Badge, Button,Glyphicon } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
+import * as APIInterface from '../utils/APIInterface';
+import {votePost} from '../actions';
 
 const upVoteValue = 'upVote';
 const downVoteValue = 'downVote';
 
 class PostItem extends Component {
 
-  vote = (postItem,voteValue,source) => {
-    this.props.onVotePost(postItem,voteValue,source);
+
+  onVotePost = (postItem,voteValue,source) => {
+    APIInterface.votePost(postItem.id,voteValue).then((post) =>{
+      this.props.vote(post);
+    });
   }
 
   render(){
@@ -24,12 +30,12 @@ class PostItem extends Component {
             Score <Badge>{postItem.voteScore}</Badge>
             <Button
               bsStyle="link"
-              onClick={() => this.vote(postItem,{option:upVoteValue},'')}>
+              onClick={() => this.onVotePost(postItem,{option:upVoteValue})}>
               <Glyphicon glyph="thumbs-up"/>
             </Button>
             <Button
               bsStyle="link"
-              onClick={() =>  this.vote(postItem,{option:downVoteValue},'')}>
+              onClick={() =>  this.onVotePost(postItem,{option:downVoteValue})}>
               <Glyphicon glyph="thumbs-down"/>
             </Button>
           </span><br/>
@@ -40,4 +46,10 @@ class PostItem extends Component {
   }
 }
 
-export default PostItem
+function mapDispatchToProps(dispatch){
+  return {
+    vote: (data) => dispatch(votePost(data))
+  }
+}
+
+export default connect(null,mapDispatchToProps)(PostItem)

@@ -1,5 +1,8 @@
 import React,{Component} from 'react';
+import {connect} from 'react-redux';
 import {Button,FormControl,FormGroup,ControlLabel} from 'react-bootstrap';
+import * as APIInterface from '../utils/APIInterface';
+import {addPost,editPost} from '../actions';
 
 const authorField = 'postAuthorField';
 const bodyField = 'postBodyField';
@@ -8,7 +11,7 @@ const titleField = 'postTitleField';
 
 class EditPostForm extends Component{
   handleSubmit = (event) => {
-    this.props.onSavePost({
+    this.savePost({
       id:this.postIdInput.value,
       title:this.postTitleInput.value,
       author: this.postAuthorInput.value,
@@ -17,6 +20,28 @@ class EditPostForm extends Component{
     });
     this.props.onCloseEditModal();
     event.preventDefault();
+  }
+
+  savePost = (post) => {
+    let postValue = null;
+    if(post.id === ''){
+      postValue = {
+        id : APIInterface.idGenerator(),
+        title: post.title,
+        timestamp :post.timestamp,
+        author : post.author,
+        body : post.body
+      };
+      APIInterface.addPost(postValue).then((post) => this.props.add(post));
+    }else{
+      postValue ={
+        title:post.title,
+        body : post.body,
+        timestamp : post.timestamp
+      }
+      APIInterface.editPost(postValue,post.id).then((post) => this.props.edit(post));
+      this.loadPostItem(post.id);
+    }
   }
 
   render(){
@@ -62,4 +87,12 @@ class EditPostForm extends Component{
   }
 }
 
-export default EditPostForm;
+function mapDispatchToProps(dispatch){
+  return {
+    add: (data) => dispatch(addPost(data)),
+    edit: (data) => dispatch(editPost(data))
+  }
+}
+
+
+export default connect(null, mapDispatchToProps)(EditPostForm);

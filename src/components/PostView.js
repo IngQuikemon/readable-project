@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Grid, Row, Col, PageHeader,Panel,Badge,Button,Jumbotron,Glyphicon,Modal} from 'react-bootstrap';
+import {connect} from 'react-redux';
 import {Link,withRouter} from 'react-router-dom';
 import CommentList from './CommentList';
 import EditPostForm from './EditPostForm';
@@ -15,12 +16,12 @@ class PostView extends Component{
     modalTitle:'',
     postItem:null
   }
-  componentDidMount(){
+  componentWillMount(){
     this.loadPost(this.props.match.params.id);
   }
 
   loadPost = filter =>{
-    this.props.onLoadPostItem(filter);
+    this.setState({postItem : this.props.posts.find(x => x.id === filter)});
   }
 
   vote = (postItem,voteValue,source) => {
@@ -140,4 +141,9 @@ class PostView extends Component{
   }
 }
 
-export default withRouter(PostView);
+function mapStateToProps (state){
+  return {posts:state.posts};
+}
+
+let ReducedComponent= connect(mapStateToProps)(PostView);
+export default withRouter(ReducedComponent)
