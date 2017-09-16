@@ -8,8 +8,7 @@ Before installing the application, you should follow the following url to instal
 the api required to make the app to work. Once you finish installing it and running
 it, you can continue with the following steps.
 
-* Follow the instructions on this repository [API][Create React App]
-(https://github.com/udacity/reactnd-project-readable-starter/tree/master/api-server)
+* Follow the instructions on this repository [API](https://github.com/udacity/reactnd-project-readable-starter/tree/master/api-server).
 
 After you have installed the api, clone the readable repository to your computer,
 or download the zip file and on the folder root where you copied, follow these steps:
