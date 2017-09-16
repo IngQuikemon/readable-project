@@ -9,9 +9,12 @@ const upVoteValue = 'upVote';
 const downVoteValue = 'downVote';
 
 class PostItem extends Component {
-
-
-  onVotePost = (postItem,voteValue,source) => {
+  /*
+  * @description triggers the modification of the score of the post.
+  * @param {object} postItem - the post object which score needs to be changed.
+  * @param {string} voteValue - indicates if increases or decreases the post score.
+  */
+  onVotePost = (postItem,voteValue) => {
     APIInterface.votePost(postItem.id,voteValue).then((post) =>{
       this.props.vote(post);
     });

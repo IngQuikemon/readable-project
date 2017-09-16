@@ -11,6 +11,10 @@ const idField = 'postIdField';
 const titleField = 'postTitleField';
 
 class EditPostForm extends Component{
+  /*
+  * @description contains the submit logic triggered by the Edit dialog.
+  * @param {object} event - the event object triggered by the edit form.
+  */
   handleSubmit = (event) => {
     this.savePost({
       id:this.postIdInput.value,
@@ -23,7 +27,10 @@ class EditPostForm extends Component{
     this.props.onCloseEditModal();
     event.preventDefault();
   }
-
+  /*
+  * @description handles the adding/editing of a comment.
+  * @param {object} post - the post object to be edited or added.
+  */
   savePost = (post) => {
     let postValue = null;
     if(post.id === ''){

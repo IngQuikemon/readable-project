@@ -8,87 +8,33 @@ import * as APIInterface from '../utils/APIInterface';
 import {loadPosts,votePost} from '../actions';
 
 class App extends Component {
-  state = {
-    postsByCategories : [],
-    categories: [],
-    postItem : null,
-    comments : []
-  }
-  componentWillMount(){
+
+  /*
+  * @description starts the initialization proccess
+  */
+  componentDidMount(){
     this.initialize();
   }
 
+  /*
+  * @description Initialize the main content of the land page
+  */
   initialize = () => {
     APIInterface.getPosts().then((posts) =>{
-      let postsResponse = posts.filter((post) => post.deleted === false);
-      this.props.load({posts:postsResponse,sortingBy:'voteScore'});
-    });
-    this.loadCategories();
-  }
-
-  setSortBy = (orderBy) => {
-    this.setState({postOrderBy:orderBy});
-  }
-
-  sortPosts = (posts) => {
-    let orderBy = this.state.postOrderBy;
-    posts.sort((a,b) =>{
-      return b[orderBy] - a[orderBy];
-    });
-    this.setState({posts:posts});
-  }
-
-  loadCategories = () => {
-    APIInterface.getCategories().then((categories) =>{
-      this.setState({categories});
-    });
-  }
-
-  deletePost = (post) => {
-    APIInterface.deletePost(post.id);
-    this.loadPosts();
-  }
-
-  loadPostsByCategory = (filter) => {
-    APIInterface.getPostsByCategory(filter).then((postsByCategories) =>{
-      this.setState({postsByCategories});
-    });
-  }
-
-  loadPostItem = (filter) => {
-    APIInterface.getPost(filter).then((postItem) =>{
-      this.setState({postItem});
-    })
-    this.loadComments(filter);
-  }
-
-  loadComments = (filter) => {
-    APIInterface.getComments(filter).then((comments) =>{
-      comments.sort((a,b) => {
-       return b.voteScore - a.voteScore;
+      APIInterface.getCategories().then((categories) => {
+        let postsResponse = posts.filter((post) => post.deleted === false);
+        this.props.load({posts:postsResponse,
+          sortingBy:'voteScore',
+          categories:categories});
       })
-      this.setState({comments});
-    })
-  }
-
-  deleteComment = (comment) => {
-    APIInterface.deleteComment(comment.id);
-    this.loadPostItem(comment.parentId);
-  }
-  voteComment = (id,voteValue,parentId) => {
-    APIInterface.voteComment(id,voteValue);
-    this.loadPostItem(parentId);
+    });
   }
 
   render(){
     return(
       <div>
           <Route exact path="/" render={() =>(
-              <AllPosts categories={this.state.categories}
-                onSortPosts={this.sortPosts}
-                onSetSortBy={this.setSortBy}
-                sortBy = {this.state.postOrderBy}
-                onVotePost={this.votePost}/>
+              <AllPosts/>
             )} />
           <Route exact path="/filtered/:category" render={props => (
               <FilteredCategories
@@ -99,15 +45,6 @@ class App extends Component {
             )} />
           <Route path="/posts/:id" render={props =>(
               <PostView
-                postItem = {this.state.postItem}
-                comments = {this.state.comments}
-                onLoadComments = {this.loadComments}
-                onGenerateId={APIInterface.idGenerator}
-                onSaveComment={this.addComment}
-                onVoteComment={this.voteComment}
-                onDeleteComment={this.deleteComment}
-                onDeletePost={this.deletePost}
-                onSavePost={this.addPost}
                 {...props}/>
           )} />
       </div>

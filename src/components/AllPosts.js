@@ -15,16 +15,31 @@ class AllPosts extends Component{
     modalTitle:'',
     postItem:null
   }
+
+  /*
+  * @description Refresh the list sorting it by the value selected.
+  * @param {object} event - contains the control event information.
+  */
   orderPost = (event) => {
     this.props.sortListBy(event.target.value);
   }
+  /*
+  * @description Opens the Modal view.
+  */
   openEditModal = () => {
     this.setState({showModal:true});
   }
+  /*
+  * @description Closes the Modal view.
+  */
   closeEditModal = () => {
     this.setState({showModal:false});
   }
-
+  /*
+  * @description Starts the edit modal view.
+  * @param {object} post - the content of the post to be edited or null in case
+  *  of being a new post.
+  */
   openEditPostDialog = (post) => {
     if(post === undefined || post === null){
       post = {

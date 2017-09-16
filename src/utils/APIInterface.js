@@ -66,7 +66,7 @@ export const deleteComment  = (id) =>
   fetch(`${api}/comments/${id}`, {
     ...vars,
     method: 'DELETE'
-  })
+  }).then(res => res.json())
 
 export const votePost = (id,voteValue) =>
   fetch(`${api}/posts/${id}`, {

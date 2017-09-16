@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import { ListGroup, ListGroupItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
 
 class CategoriesList extends Component{
   render(){
@@ -25,4 +26,10 @@ class CategoriesList extends Component{
   }
 }
 
-export default CategoriesList
+function mapStateToProps (state){
+  return {
+    categories:state.posts.categories
+  };
+}
+
+export default connect(mapStateToProps)(CategoriesList)

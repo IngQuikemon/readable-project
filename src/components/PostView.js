@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import { Grid, Row, Col, PageHeader,Panel,Badge,Button,Jumbotron,Glyphicon,Modal} from 'react-bootstrap';
 import {connect} from 'react-redux';
-import {Link,withRouter} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import CommentList from './CommentList';
 import EditPostForm from './EditPostForm';
-import {editPost,loadPostItem,votePost,deletePost} from '../actions';
+import {editPost,loadPostItem,votePost,deletePost,postFilter} from '../actions';
 import * as APIInterface from '../utils/APIInterface';
 
 const upVoteValue = 'upVote';
@@ -16,10 +16,16 @@ class PostView extends Component{
     showModal:false,
     modalTitle:''
   }
-  componentWillMount(){
+  /*
+  * @description Loads the post data requested by the url.
+  */
+  componentDidMount(){
     this.loadPost(this.props.match.params.id);
   }
-
+  /*
+  * @description  Loads the post and its comments matching the id requested.
+  * @param {string} filter - the id of the post data to load.
+  */
   loadPost = filter =>{
     APIInterface.getPost(filter).then((post) => {
       APIInterface.getComments(filter).then((comments) => {
@@ -30,35 +36,59 @@ class PostView extends Component{
       });
     });
   }
-
-  vote = (postItem,voteValue,source) => {
+  /*
+  * @description  triggers the vote process to alter the post score.
+  * @param {object} postItem - to post which score needs to be modified.
+  * @param {string} voteValue - the indicate of increasing or decreasing the score
+  * of the post item.
+  */
+  vote = (postItem,voteValue) => {
     APIInterface.votePost(postItem.id, voteValue).then((postItem)=>{
       this.props.votePostItem(postItem);
     });
   }
-
+  /*
+  * @description  opens the dialog view.
+  */
   openEditModal = () => {
     this.setState({showModal:true});
   }
+  /*
+  * @description  closes the dialog view.
+  */
   closeEditModal = () => {
     this.setState({showModal:false});
   }
-
-  openEditPostDialog = (post) => {
+  /*
+  * @description  Initialize the dialog to edit the post.
+  */
+  openEditPostDialog = () => {
     this.setState({modalTitle:editModalTitle});
-    this.setState({postItem : post});
     this.openEditModal();
   }
-
+  /*
+  * @description clears the filter data and returns to home.
+  */
+  returnHome = () =>{
+    this.props.loadFiltered({
+      filterBy:'',
+      posts:[]
+    });
+    this.props.history.push('/');
+  }
+  /*
+  * @description Deletes the post from the list.
+  * @param {object} post - the object of the post to be deleted.
+  */
   deletePost = (post) => {
     APIInterface.deletePost(post.id).then((postReponse) =>{
       this.props.deletePostItem(postReponse);
-      this.props.history.push('/');
+      this.returnHome();
     });
   }
 
   render(){
-    const {post,onLoadComments,onVoteComment,onDeleteComment} = this.props;
+    const {post} = this.props;
     let dateToParse;
     let postDate;
     if(post.postItem !== null){
@@ -86,9 +116,9 @@ class PostView extends Component{
                     </Button>
                   </span>
                   <span className="button_right">
-                    <Link to="/">
+                    <Button bsStyle="link" onClick={this.returnHome}>
                       <Glyphicon glyph="home"/> Return
-                    </Link>
+                    </Button>
                     &nbsp;
                     &nbsp;
                     <Button bsStyle="default" onClick={() => {this.openEditPostDialog(post.postItem)}}>
@@ -106,11 +136,6 @@ class PostView extends Component{
               <br/>
               <CommentList
                 postId={post.postItem.id}
-                onGenerateId={this.props.onGenerateId}
-                onSaveComment={this.props.onSaveComment}
-                onVoteComment={onVoteComment}
-                onLoadComments = {onLoadComments}
-                onDeleteComment={onDeleteComment}
                 comments={post.comments} />
               </Col>
             </Row>
@@ -121,7 +146,7 @@ class PostView extends Component{
             </Modal.Header>
             <Modal.Body>
               <EditPostForm
-                postItem={this.props.post.postItem}
+                postItem={post.postItem}
                 onCloseEditModal = {this.closeEditModal} />
             </Modal.Body>
           </Modal>
@@ -148,9 +173,9 @@ function mapDispatchToProps(dispatch){
     editPostItem: (data) => dispatch(editPost(data)),
     votePostItem: (data) => dispatch(votePost(data)),
     loadPostItem: (data) => dispatch(loadPostItem(data)),
-    deletePostItem: (data) => dispatch(deletePost(data))
+    deletePostItem: (data) => dispatch(deletePost(data)),
+    loadFiltered: (data) => dispatch(postFilter(data))
   };
 }
 
-let ReducedComponent= connect(mapStateToProps,mapDispatchToProps)(PostView);
-export default withRouter(ReducedComponent)
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(PostView));

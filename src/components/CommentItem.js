@@ -1,22 +1,33 @@
 import React, {Component} from 'react';
 import {Panel,Badge,Button,Glyphicon} from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {voteComment,deleteComment} from '../actions';
+import * as APIInterface from '../utils/APIInterface';
 
 const upVoteValue = 'upVote';
 const downVoteValue = 'downVote';
 
 class CommentItem extends Component{
-
-  editComment = (comment) => {
-    this.props.onEditCommentDialog(comment);
+  /*
+  * @description Refresh the current shelf.
+  * @param {object} comment - contains the comment to be deleted.
+  */
+  deleteComment = (comment) => {
+    APIInterface.deleteComment(comment.id).then((commentItem) =>{
+      this.props.delete(commentItem);
+    });
+  }
+  /*
+  * @description Refresh the current shelf.
+  * @param {string} id - ID value of the item to be modified.
+  * @param {string} voteValue - The voting value to alter the score.
+  */
+  voteComment = (id,voteValue) => {
+    APIInterface.voteComment(id,voteValue).then((comment) =>{
+      this.props.vote(comment);
+    });
   }
 
-  deleteComment = (commentItem) => {
-    this.props.onDeleteComment(commentItem);
-  }
-
-  vote = (id,voteValue,parentId) => {
-    this.props.onVoteComment(id,voteValue,parentId);
-  }
 
   render(){
     const {commentItem} = this.props;
@@ -31,12 +42,12 @@ class CommentItem extends Component{
             Score: <Badge> {commentItem.voteScore}</Badge>
             <Button
               bsStyle="link"
-              onClick={() => this.vote(commentItem.id,{option:upVoteValue},commentItem.parentId)}>
+              onClick={() => this.voteComment(commentItem.id,{option:upVoteValue})}>
               <Glyphicon glyph="thumbs-up"/>
             </Button>
             <Button
               bsStyle="link"
-              onClick={() =>  this.vote(commentItem.id,{option:downVoteValue}, commentItem.parentId)}>
+              onClick={() =>  this.voteComment(commentItem.id,{option:downVoteValue})}>
               <Glyphicon glyph="thumbs-down"/>
             </Button>
           </span>
@@ -59,4 +70,11 @@ class CommentItem extends Component{
   }
 }
 
-export default CommentItem
+function mapDispatchToProps(dispatch){
+  return {
+    vote: (data) => dispatch(voteComment(data)),
+    delete: (data) => dispatch(deleteComment(data))
+  }
+}
+
+export default connect(null,mapDispatchToProps)(CommentItem)

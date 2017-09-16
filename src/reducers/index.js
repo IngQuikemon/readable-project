@@ -11,26 +11,44 @@ import {
   EDIT_COMMENT,
   DELETE_COMMENT,
   VOTE_COMMENT,
-  LOAD_CATEGORIES,
-  LOAD_POST_ITEM,
-  LOAD_COMMENTS
+  LOAD_POST_ITEM
 } from '../actions';
 
+/*
+* @description contains the initial value of the state object for the posts reducer.
+*/
 const postsInitialValue = {
   list: [],
-  sortBy: 'voteScore'
+  sortBy: 'voteScore',
+  filterBy: '',
+  categories: [],
+  filteredList: []
 }
 
+/*
+* @description Handles the posts reducer to display and manage the general post list.
+* @param {object} state - contains the data managed by the store related to posts.
+* @param {object} action - contains the action information to execute the changes
+* to the data that will be returned to the store.
+*/
 function posts (state = postsInitialValue, action){
-  const {post,posts,sortBy} = action;
-  const sortFunction = (a,b) => {return a[state.sortBy] < b[state.sortBy]};
+  const {post,posts,sortBy,filterBy,categories} = action;
+  const sortFunction = (a,b) => {return a[state.sortBy] < b[state.sortBy];};
   switch(action.type){
     case LOAD_POSTS:
       let loadResponse = [...state.list,...posts];
       return {
         ...state,
-        list:loadResponse.sort(sortFunction)
+        categories: [...state.categories,...categories],
+        list:loadResponse
+          .sort(sortFunction)
       };
+    case POSTS_FILTER:
+      return {
+        ...state,
+        filterBy:filterBy,
+        filteredList:[...posts]
+      }
     case ADD_POST:
       return {
         ...state,
@@ -55,6 +73,7 @@ function posts (state = postsInitialValue, action){
       return (sortBy === state.sortBy
         ? state
         : {
+          ...state,
           list: [...state.list].sort((a,b) =>
             {return a[sortBy] < b[sortBy]}),
           sortBy:sortBy
@@ -89,21 +108,20 @@ function posts (state = postsInitialValue, action){
       return state;
   }
 }
-
-function categories (state = [],action){
-  switch (action.type) {
-    case LOAD_CATEGORIES:
-      return [...state,action.categories];
-    default:
-      return state;
-  }
-}
-
+/*
+* @description contains the initial state value of the post reducer.
+*/
 const initialPostValue ={
   postItem:null,
   comments: []
 }
-
+/*
+* @description Handles the posts reducer to display and manage the general post item
+  and its comment list.
+* @param {object} state - contains the data managed by the store related to posts.
+* @param {object} action - contains the action information to execute the changes
+* to the data that will be returned to the store.
+*/
 function post (state = initialPostValue, action){
   const {post,comments,comment} = action;
 
@@ -113,11 +131,6 @@ function post (state = initialPostValue, action){
         //...state,
         postItem : post,
         comments: comments
-      }
-    case LOAD_COMMENTS:
-      return{
-        ...state,
-        comments:comments
       }
     case EDIT_POST:
       return {
@@ -142,33 +155,41 @@ function post (state = initialPostValue, action){
         postItem:null,
         comments:[]
       }
-      /*
-    case EDIT_COMMENTT:
-      return {state.map( commentItem =>{
-        if(postItem.id === post.id){
-          return({
-            ...commentItem,
-            body : comment.body,
-            timestamp : comment.timestamp,
-          });
-        }
-      })}
+    case EDIT_COMMENT:
+      return {
+        ...state,
+        comments:state.comments.map((commentItem) =>{
+          if(commentItem.id === comment.id){
+            return({
+              ...commentItem,
+              body : comment.body,
+              timestamp : comment.timestamp,
+            });
+          }
+          else{
+            return commentItem;
+          }
+        })
+      }
     case DELETE_COMMENT:
       return {
-        state.filter( commentItem => commentItem.id !== comment.id);
+        ...state,
+        comments:state.comments.filter((commentItem) =>{return commentItem.id !== comment.id})
       };
     case VOTE_COMMENT:
       return {
-        return {state.map( commentItem => {
+        ...state,
+        comments: state.comments.map((commentItem) => {
           if(commentItem.id === comment.id){
             return({
               ...commentItem,
               voteScore : comment.voteScore,
             })
           }
+          else{
+            return commentItem;
+          }
         })}
-      }
-      */
     default:
       return state;
   }

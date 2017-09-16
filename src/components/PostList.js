@@ -14,7 +14,7 @@ class PostList extends Component{
             No posts found yet. Come on and start posting.
           </Panel>
         : <div>
-            {posts.list.map((post) => (
+            {posts.map((post) => (
               <PostItem
                 key={post.id}
                 postItem={post}
@@ -27,6 +27,6 @@ class PostList extends Component{
   }
 }
 function mapStateToProps (state){
-  return {posts:state.posts};
+  return {posts: state.posts.filterBy === '' ? state.posts.list : state.posts.filteredList};
 }
 export default connect(mapStateToProps)(PostList)

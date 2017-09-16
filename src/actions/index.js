@@ -5,7 +5,6 @@ export const ADD_POST = 'ADD_POST';
 export const EDIT_POST = 'EDIT_POST';
 export const DELETE_POST = 'DELETE_POST';
 export const VOTE_POST = 'VOTE_POST';
-export const LOAD_COMMENTS = 'LOAD_COMMENTS';
 export const ADD_COMMENT = 'ADD_COMMENT';
 export const EDIT_COMMENT = 'EDIT_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
@@ -13,10 +12,11 @@ export const VOTE_COMMENT = 'VOTE_COMMENT';
 export const LOAD_CATEGORIES = 'LOAD_CATEGORIES';
 export const LOAD_POST_ITEM = 'LOAD_POST_ITEM';
 
-export function postFilter({categoryFilter}){
+export function postFilter({filterBy,posts}){
   return {
     type: POSTS_FILTER,
-    categoryFilter,
+    filterBy:filterBy,
+    posts:posts,
   }
 }
 
@@ -27,11 +27,12 @@ export function postSort(sortingBy){
   }
 }
 
-export function loadPosts({posts,sortingBy}){
+export function loadPosts({posts,sortingBy,categories}){
   return{
     type:LOAD_POSTS,
     posts:posts,
-    sortBy: sortingBy
+    sortBy: sortingBy,
+    categories:categories
   }
 }
 
@@ -71,13 +72,6 @@ export function loadPostItem({post,comments}){
   }
 }
 
-export function loadComments(comments){
-  return {
-    type:LOAD_COMMENTS,
-    comments:comments,
-  }
-}
-
 export function addComment(comment){
   return{
     type: ADD_COMMENT,
@@ -92,15 +86,17 @@ export function editComment(comment){
   }
 }
 
-export function deleteComment({comment}){
+export function deleteComment(comment){
   return{
     type: DELETE_COMMENT,
+    comment:comment,
   }
 }
 
-export function voteComment({comment}){
+export function voteComment(comment){
   return{
     type: VOTE_COMMENT,
+    comment:comment,
   }
 }
 

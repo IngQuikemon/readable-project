@@ -10,6 +10,10 @@ const parentIdField = 'commentParent';
 const commentIdField = 'commentId';
 
 class EditForm extends Component{
+  /*
+  * @description contains the submit logic triggered by the Edit dialog.
+  * @param {object} event - the event object triggered by the edit form.
+  */
   handleSubmit = (event) => {
     this.addComment({
       id:this.commentIdInput.value,
@@ -23,7 +27,12 @@ class EditForm extends Component{
     this.props.onCloseEditModal();
     event.preventDefault();
   }
-
+  /*
+  * @description handles the adding/editing of a comment.
+  * @param {object} comment - the comment object to be edited or added.
+  * @param {string} commentId - the comment id to be edited or added.
+  * @param {string} parentId - the parent id of the comment to be added or edited.
+  */
   addComment = (comment,commentId,parentId) => {
     let commentValue = null;
     if(comment.id === ''){

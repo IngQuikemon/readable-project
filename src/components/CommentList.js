@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
 import {Panel, Button, Glyphicon, Modal} from 'react-bootstrap';
-import {withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
 import CommentItem from './CommentItem';
 import EditCommentForm from './EditCommentForm';
-import * as APIInterface from '../utils/APIInterface';
 
 const editModalTitle = 'Edit comment';
 const newModalTitle = 'New comment';
@@ -14,15 +11,24 @@ class CommentList extends Component{
     commentItem : null,
     modalTitle : ''
   }
-
+  /*
+  * @description Opens the modal dialog.
+  */
   openEditModal = () => {
     this.setState({showModal : true});
   }
-
+  /*
+  * @description Closes the modal dialog.
+  */
   closeEditModal = () => {
     this.setState({showModal : false});
   }
-
+  /*
+* @description Initialize the edit dialog.
+* @param {object} comment - the object containing the comment data to be edited
+* or null in case of a new comment.
+* @param {string} parentId - the parent id of the post the comment belongs to.
+*/
   openEditCommentDialog = (comment,parentId) => {
     if(comment === undefined || comment === null){
       comment = {
@@ -43,7 +49,7 @@ class CommentList extends Component{
 
 
   render(){
-    const {comments,postId,onSaveComment,onVoteComment,onDeleteComment} = this.props;
+    const {comments,postId} = this.props;
     console.log(comments);
     return (
       <div>
@@ -67,8 +73,6 @@ class CommentList extends Component{
                 <CommentItem
                   key={comment.id}
                   commentItem={comment}
-                  onVoteComment={onVoteComment}
-                  onDeleteComment={onDeleteComment}
                   onEditCommentDialog={this.openEditCommentDialog}/>
               ))}
             </div>
@@ -79,9 +83,7 @@ class CommentList extends Component{
           </Modal.Header>
           <Modal.Body>
             <EditCommentForm
-              onGenerateId={this.props.onGenerateId}
               commentItem={this.state.commentItem}
-              onSaveComment={onSaveComment}
               onCloseEditModal = {this.closeEditModal}/>
           </Modal.Body>
         </Modal>
