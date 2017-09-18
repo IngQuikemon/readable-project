@@ -1,9 +1,8 @@
-const api = "http://localhost:5001"
+const api = "http://localhost:3001"
 
 
-// Generate a unique token for storing your bookshelf data on the backend server.
+// Generate a unique token for storing your readable data on the backend server.
 let token = localStorage.token
-console.log(token)
 if (!token)
   token = localStorage.token = Math.random().toString(18).substr(-8);
 
