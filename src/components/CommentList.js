@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Panel, Button, Glyphicon, Modal} from 'react-bootstrap';
+import {Panel, Button, Glyphicon, Modal,Badge} from 'react-bootstrap';
 import CommentItem from './CommentItem';
 import EditCommentForm from './EditCommentForm';
 
@@ -50,11 +50,10 @@ class CommentList extends Component{
 
   render(){
     const {comments,postId} = this.props;
-    console.log(comments);
     return (
       <div>
         <div className="full_width">
-          <span className="title_text">Comments:</span>
+          <span className="title_text">Comments <Badge>{comments.length}</Badge></span>
           <span className="button_right">
             <Button bsStyle="link" onClick={() => {this.openEditCommentDialog(null,postId)}}>
               <Glyphicon glyph="plus"/> Add Comment

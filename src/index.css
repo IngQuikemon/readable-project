@@ -24,6 +24,10 @@ body {
   float:right;
 }
 
+.blob_comment_count_text{
+  font-size:12px;
+}
+
 .button_right{
   float:right;
 }

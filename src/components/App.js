@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Route,withRouter} from 'react-router-dom';
+import {Route,withRouter,Switch} from 'react-router-dom';
 import {connect} from 'react-redux';
 import AllPosts from './AllPosts';
 import FilteredCategories from './FilteredCategories';
 import PostView from './PostView';
 import * as APIInterface from '../utils/APIInterface';
 import {loadPosts,votePost} from '../actions';
+import NotFound from './NotFound';
 
 class App extends Component {
 
@@ -33,20 +34,22 @@ class App extends Component {
   render(){
     return(
       <div>
+        <Switch>
           <Route exact path="/" render={() =>(
               <AllPosts/>
+            )}/>
+            <Route exact path="/filtered/:category" render={props => (
+                <FilteredCategories
+                  onLoadByCategory = {this.loadPostsByCategory}
+                  {...props}
+                  />
+              )} />
+            <Route exact path="/posts/:id" render={props =>(
+                <PostView
+                  {...props}/>
             )} />
-          <Route exact path="/filtered/:category" render={props => (
-              <FilteredCategories
-                posts={this.state.postsByCategories}
-                onLoadByCategory = {this.loadPostsByCategory}
-                {...props}
-                />
-            )} />
-          <Route path="/posts/:id" render={props =>(
-              <PostView
-                {...props}/>
-          )} />
+            <Route component={NotFound} />
+        </Switch>
       </div>
     )
   }

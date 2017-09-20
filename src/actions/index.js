@@ -1,20 +1,8 @@
-export const POSTS_FILTER = 'POSTS_FILTER';
-export const SORT_POSTS = 'SORT_POSTS';
-export const LOAD_POSTS = 'LOAD_POSTS';
-export const ADD_POST = 'ADD_POST';
-export const EDIT_POST = 'EDIT_POST';
-export const DELETE_POST = 'DELETE_POST';
-export const VOTE_POST = 'VOTE_POST';
-export const ADD_COMMENT = 'ADD_COMMENT';
-export const EDIT_COMMENT = 'EDIT_COMMENT';
-export const DELETE_COMMENT = 'DELETE_COMMENT';
-export const VOTE_COMMENT = 'VOTE_COMMENT';
-export const LOAD_CATEGORIES = 'LOAD_CATEGORIES';
-export const LOAD_POST_ITEM = 'LOAD_POST_ITEM';
+import * as Constants from './types.js';
 
 export function postFilter({filterBy,posts}){
   return {
-    type: POSTS_FILTER,
+    type: Constants.POSTS_FILTER,
     filterBy:filterBy,
     posts:posts,
   }
@@ -22,14 +10,14 @@ export function postFilter({filterBy,posts}){
 
 export function postSort(sortingBy){
   return{
-    type:SORT_POSTS,
+    type: Constants.SORT_POSTS,
     sortBy: sortingBy
   }
 }
 
 export function loadPosts({posts,sortingBy,categories}){
   return{
-    type:LOAD_POSTS,
+    type: Constants.LOAD_POSTS,
     posts:posts,
     sortBy: sortingBy,
     categories:categories
@@ -38,35 +26,35 @@ export function loadPosts({posts,sortingBy,categories}){
 
 export function addPost(post){
   return{
-    type: ADD_POST,
+    type: Constants.ADD_POST,
     post:post,
   }
 }
 
 export function editPost(post){
   return{
-    type: EDIT_POST,
+    type: Constants.EDIT_POST,
     post,
   }
 }
 
 export function deletePost(post){
   return{
-    type: DELETE_POST,
+    type: Constants.DELETE_POST,
     post,
   }
 }
 
 export function votePost(post){
   return{
-    type: VOTE_POST,
+    type: Constants.VOTE_POST,
     post:post,
   }
 }
 
 export function loadPostItem({post,comments}){
   return{
-    type: LOAD_POST_ITEM,
+    type: Constants.LOAD_POST_ITEM,
     post:post,
     comments:comments,
   }
@@ -74,35 +62,35 @@ export function loadPostItem({post,comments}){
 
 export function addComment(comment){
   return{
-    type: ADD_COMMENT,
+    type: Constants.ADD_COMMENT,
     comment:comment,
   }
 }
 
 export function editComment(comment){
   return{
-    type: EDIT_COMMENT,
+    type: Constants.EDIT_COMMENT,
     comment:comment,
   }
 }
 
 export function deleteComment(comment){
   return{
-    type: DELETE_COMMENT,
+    type: Constants.DELETE_COMMENT,
     comment:comment,
   }
 }
 
 export function voteComment(comment){
   return{
-    type: VOTE_COMMENT,
+    type: Constants.VOTE_COMMENT,
     comment:comment,
   }
 }
 
 export function loadCategories(categories){
   return{
-    type: LOAD_CATEGORIES,
+    type: Constants.LOAD_CATEGORIES,
     categories:categories,
   }
 }

@@ -103,9 +103,10 @@ class AllPosts extends Component{
     );
   }
 }
-function mapStateToProps (state){
+function mapStateToProps ({posts,categories}){
   return{
-    posts : state
+    posts : posts,
+    categories:categories,
   }
 }
 function mapDispatchToProps(dispatch){

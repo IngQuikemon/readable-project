@@ -43,7 +43,10 @@ class PostItem extends Component {
             </Button>
           </span><br/>
           <span className="blob_title_subtext">posted by {postItem.author} on {postDate}</span><br/>
-          <span className="blob_body">{postItem.body}</span>
+          <span className="blob_body">{postItem.body}</span><br/>
+          <span className="blob_comment_count_text">
+            Comments <Badge>{postItem.commentsCount}</Badge>
+          </span>
         </ListGroupItem>
     )
   }
