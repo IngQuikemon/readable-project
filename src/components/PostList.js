@@ -6,6 +6,7 @@ import PostItem from './PostItem';
 class PostList extends Component{
   render(){
     const {posts,onVotePost} = this.props;
+    console.log(posts);
     return (
       <div>
       {
@@ -29,4 +30,5 @@ class PostList extends Component{
 function mapStateToProps (state){
   return {posts: state.posts.filterBy === '' ? state.posts.list : state.posts.filteredList};
 }
+
 export default connect(mapStateToProps)(PostList)

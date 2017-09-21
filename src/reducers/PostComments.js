@@ -30,7 +30,7 @@ export default function post (state = initialPostValue, action){
       return {
         //...state,
         postItem : post,
-        comments: comments
+        comments: comments.filter(x => x.parentDeleted !== true && x.deleted !== true)
       }
     case EDIT_POST:
       return {

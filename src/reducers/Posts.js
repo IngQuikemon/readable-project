@@ -2,6 +2,7 @@ import {
   POSTS_FILTER,
   SORT_POSTS,
   LOAD_POSTS,
+  LOAD_COMMENTS_COUNT,
   ADD_POST,
   EDIT_POST,
   DELETE_POST,
@@ -25,7 +26,7 @@ const postsInitialValue = {
 * to the data that will be returned to the store.
 */
 export default function posts (state = postsInitialValue, action){
-  const {post,posts,sortBy,filterBy,categories} = action;
+  const {post,posts,sortBy,filterBy,categories,count} = action;
   const sortFunction = (a,b) => {return a[state.sortBy] < b[state.sortBy];};
   switch(action.type){
     case LOAD_POSTS:
@@ -36,6 +37,28 @@ export default function posts (state = postsInitialValue, action){
         list:loadResponse
           .sort(sortFunction)
       };
+    case LOAD_COMMENTS_COUNT:
+      let listToMap = state.filterBy === '' ? state.list : state.filteredList;
+      console.log(state.filterBy);
+      let commentCountResponse = listToMap.map(postItem => {
+        if(postItem.id === post.id){
+          return({
+            ...postItem,
+            commentCount:count,
+          });
+        }else{
+          return postItem;
+        }
+      });
+      return state.filterBy === ''
+        ? {
+          ...state,
+          list:commentCountResponse,
+        }
+        : {
+          ...state,
+          filteredList:commentCountResponse,
+        };
     case POSTS_FILTER:
       return {
         ...state,

@@ -13,10 +13,10 @@ class FilteredCategories extends Component {
   componentDidMount(){
     APIInterface.getPostsByCategory(this.props.match.params.category).then(
       (posts) => {
-          this.props.loadFiltered({
-            filterBy:this.props.match.params.category,
-            posts: posts
-          });
+        this.props.loadFiltered({
+          filterBy:this.props.match.params.category,
+          posts: posts
+        });
       }
     )
   }

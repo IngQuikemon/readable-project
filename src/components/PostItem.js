@@ -3,12 +3,24 @@ import {connect} from 'react-redux';
 import {ListGroupItem, Badge, Button,Glyphicon } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import * as APIInterface from '../utils/APIInterface';
-import {votePost} from '../actions';
+import {votePost,loadCommentsCount} from '../actions';
 
 const upVoteValue = 'upVote';
 const downVoteValue = 'downVote';
 
 class PostItem extends Component {
+
+  componentDidMount(){
+    console.log("PostItemMounted");
+    let postItem = this.props.postItem;
+    APIInterface.getComments(postItem.id)
+      .then((comments) =>{
+        this.props.commentsCount({
+          post:postItem,
+          count:comments.length
+        })
+      });
+  }
   /*
   * @description triggers the modification of the score of the post.
   * @param {object} postItem - the post object which score needs to be changed.
@@ -45,7 +57,7 @@ class PostItem extends Component {
           <span className="blob_title_subtext">posted by {postItem.author} on {postDate}</span><br/>
           <span className="blob_body">{postItem.body}</span><br/>
           <span className="blob_comment_count_text">
-            Comments <Badge>{postItem.commentsCount}</Badge>
+            Comments <Badge>{postItem.commentCount}</Badge>
           </span>
         </ListGroupItem>
     )
@@ -54,7 +66,8 @@ class PostItem extends Component {
 
 function mapDispatchToProps(dispatch){
   return {
-    vote: (data) => dispatch(votePost(data))
+    vote: (data) => dispatch(votePost(data)),
+    commentsCount : (data) => dispatch(loadCommentsCount(data))
   }
 }
 

@@ -11,7 +11,7 @@ export function postFilter({filterBy,posts}){
 export function postSort(sortingBy){
   return{
     type: Constants.SORT_POSTS,
-    sortBy: sortingBy
+    sortBy: sortingBy,
   }
 }
 
@@ -20,7 +20,15 @@ export function loadPosts({posts,sortingBy,categories}){
     type: Constants.LOAD_POSTS,
     posts:posts,
     sortBy: sortingBy,
-    categories:categories
+    categories:categories,
+  }
+}
+
+export function loadCommentsCount({post,count}){
+  return {
+    type: Constants.LOAD_COMMENTS_COUNT,
+    post:post,
+    count:count,
   }
 }
 

@@ -1,6 +1,7 @@
 export const POSTS_FILTER = 'POSTS_FILTER';
 export const SORT_POSTS = 'SORT_POSTS';
 export const LOAD_POSTS = 'LOAD_POSTS';
+export const LOAD_COMMENTS_COUNT = 'LOAD_COMMENTS_COUNT';
 export const ADD_POST = 'ADD_POST';
 export const EDIT_POST = 'EDIT_POST';
 export const DELETE_POST = 'DELETE_POST';
