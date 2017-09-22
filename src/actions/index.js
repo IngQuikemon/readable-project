@@ -32,6 +32,14 @@ export function loadCommentsCount({post,count}){
   }
 }
 
+export function loadFilteredCommentsCount({post,count}){
+  return {
+    type: Constants.LOAD_FILTERED_COMMENTS_COUNT,
+    post:post,
+    count:count,
+  }
+}
+
 export function addPost(post){
   return{
     type: Constants.ADD_POST,

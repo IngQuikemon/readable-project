@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import PostList from './PostList';
 import CategoriesList from './CategoriesList';
 import EditPostForm from './EditPostForm';
-import {postSort} from '../actions';
+import {postSort,postFilter} from '../actions';
 
 const editModalTitle = 'Edit post';
 const newModalTitle = 'New post';
@@ -14,6 +14,12 @@ class AllPosts extends Component{
     showModal:false,
     modalTitle:'',
     postItem:null
+  }
+  componentDidMount(){
+    this.props.loadFiltered({
+      filterBy:'',
+      posts:[]
+    });
   }
 
   /*
@@ -59,7 +65,7 @@ class AllPosts extends Component{
   }
 
   render(){
-    const {categories,posts} = this.props;
+    const {posts} = this.props;
     return(
       <div>
         <Grid>
@@ -84,7 +90,7 @@ class AllPosts extends Component{
               <PostList/>
             </Col>
             <Col md={2}>
-              <CategoriesList categories={categories} />
+              <CategoriesList />
             </Col>
           </Row>
         </Grid>
@@ -105,13 +111,13 @@ class AllPosts extends Component{
 }
 function mapStateToProps ({posts,categories}){
   return{
-    posts : posts,
-    categories:categories,
+    posts : posts
   }
 }
 function mapDispatchToProps(dispatch){
   return {
-    sortListBy: (data) => dispatch(postSort(data))
+    sortListBy: (data) => dispatch(postSort(data)),
+    loadFiltered: (data)=> dispatch(postFilter(data))
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(AllPosts)

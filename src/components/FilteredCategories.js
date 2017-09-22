@@ -3,6 +3,7 @@ import { Grid, Row, Col, PageHeader, Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import PostList from './PostList';
+import CategoriesList from './CategoriesList';
 import {postFilter} from '../actions';
 import * as APIInterface from '../utils/APIInterface';
 
@@ -36,7 +37,7 @@ class FilteredCategories extends Component {
     return(
       <Grid>
         <Row className="show-grid">
-          <Col md={12}>
+          <Col md={10}>
             <PageHeader> {category.charAt(0).toUpperCase() + category.slice(1)}
               <small>
                 <Button bsStyle="link" onClick={this.returnHome}> return to main page</Button>
@@ -45,6 +46,9 @@ class FilteredCategories extends Component {
             <div>
               <PostList/>
             </div>
+          </Col>
+          <Col md={2}>
+            <CategoriesList />
           </Col>
         </Row>
       </Grid>
