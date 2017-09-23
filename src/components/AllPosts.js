@@ -100,7 +100,6 @@ class AllPosts extends Component{
           </Modal.Header>
           <Modal.Body>
             <EditPostForm
-              onGenerateId={this.props.onGenerateId}
               postItem={this.state.postItem}
               onCloseEditModal = {this.closeEditModal} />
           </Modal.Body>
@@ -109,7 +108,7 @@ class AllPosts extends Component{
     );
   }
 }
-function mapStateToProps ({posts,categories}){
+function mapStateToProps ({posts}){
   return{
     posts : posts
   }
