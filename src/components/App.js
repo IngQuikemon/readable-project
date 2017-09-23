@@ -40,7 +40,6 @@ class App extends Component {
             )}/>
             <Route exact path="/filtered/:category" render={props => (
                 <FilteredCategories
-                  onLoadByCategory = {this.loadPostsByCategory}
                   {...props}
                   />
               )} />

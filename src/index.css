@@ -41,7 +41,7 @@ body {
   padding-left:15px;
   border-left:1px solid #eee;
 }
-.menu_holder .active a {
+.menu_holder .active button {
   color:white;
 }
 

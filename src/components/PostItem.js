@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {ListGroupItem, Badge, Button,Glyphicon } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import * as APIInterface from '../utils/APIInterface';
-import {votePost,loadCommentsCount} from '../actions';
+import {votePost,loadCommentsCount,loadFilteredCommentsCount} from '../actions';
 
 const upVoteValue = 'upVote';
 const downVoteValue = 'downVote';
@@ -11,14 +11,20 @@ const downVoteValue = 'downVote';
 class PostItem extends Component {
 
   componentDidMount(){
-    console.log("PostItemMounted");
     let postItem = this.props.postItem;
     APIInterface.getComments(postItem.id)
       .then((comments) =>{
-        this.props.commentsCount({
-          post:postItem,
-          count:comments.length
-        })
+        if(this.props.filterBy !== ''){
+          this.props.filteredCommentsCount({
+            post: postItem,
+            count:comments.length
+          });
+        }else{
+          this.props.commentsCount({
+            post:postItem,
+            count:comments.length
+          });
+        }
       });
   }
   /*
@@ -64,11 +70,18 @@ class PostItem extends Component {
   }
 }
 
+function mapStateToProps (state){
+  return {
+    filterBy : state.posts.filterBy
+  };
+}
+
 function mapDispatchToProps(dispatch){
   return {
     vote: (data) => dispatch(votePost(data)),
-    commentsCount : (data) => dispatch(loadCommentsCount(data))
+    commentsCount : (data) => dispatch(loadCommentsCount(data)),
+    filteredCommentsCount: (data) => dispatch(loadFilteredCommentsCount(data))
   }
 }
 
-export default connect(null,mapDispatchToProps)(PostItem)
+export default connect(mapStateToProps,mapDispatchToProps)(PostItem)

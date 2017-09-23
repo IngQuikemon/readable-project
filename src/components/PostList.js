@@ -6,13 +6,12 @@ import PostItem from './PostItem';
 class PostList extends Component{
   render(){
     const {posts,onVotePost} = this.props;
-    console.log(posts);
     return (
       <div>
       {
         posts === undefined || posts.length === 0
         ? <Panel>
-            No posts found yet. Come on and start posting.
+            No posts found.
           </Panel>
         : <div>
             {posts.map((post) => (

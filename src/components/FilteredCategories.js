@@ -8,19 +8,20 @@ import {postFilter} from '../actions';
 import * as APIInterface from '../utils/APIInterface';
 
 class FilteredCategories extends Component {
-  /*
-  * @description initialize the posts filtered by category.
-  */
+
   componentDidMount(){
-    APIInterface.getPostsByCategory(this.props.match.params.category).then(
-      (posts) => {
-        this.props.loadFiltered({
-          filterBy:this.props.match.params.category,
-          posts: posts
+    let path = this.props.match.params.category;
+    if(this.props.categories.length === 0){
+      APIInterface.getPostsByCategory(path).then(
+        (posts) => {
+          this.props.loadFiltered({
+            filterBy:path,
+            posts: posts
+          });
         });
-      }
-    )
+    }
   }
+
   /*
   * @description Clears the filter values and returns to the main page.
   */
@@ -56,10 +57,17 @@ class FilteredCategories extends Component {
   }
 }
 
+function mapStateToProps({posts}){
+  return {
+    categories: posts.categories,
+    filteredList : posts.filteredList
+  }
+}
+
 function mapDispatchToProps(dispatch){
   return {
     loadFiltered: (data) => dispatch(postFilter(data))
   }
 }
 
-export default withRouter(connect(null,mapDispatchToProps)(FilteredCategories))
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(FilteredCategories))

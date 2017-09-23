@@ -90,7 +90,6 @@ class PostView extends Component{
 
   render(){
     const {post} = this.props;
-    console.log(post);
     let validatePostValue = (post.postItem !== null && !(Object.keys(post.postItem).length === 0 && post.postItem.constructor === Object) && !post.postItem.hasOwnProperty('error'));
     let dateToParse;
     let postDate;

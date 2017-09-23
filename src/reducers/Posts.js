@@ -3,6 +3,7 @@ import {
   SORT_POSTS,
   LOAD_POSTS,
   LOAD_COMMENTS_COUNT,
+  LOAD_FILTERED_COMMENTS_COUNT,
   ADD_POST,
   EDIT_POST,
   DELETE_POST,
@@ -38,9 +39,7 @@ export default function posts (state = postsInitialValue, action){
           .sort(sortFunction)
       };
     case LOAD_COMMENTS_COUNT:
-      let listToMap = state.filterBy === '' ? state.list : state.filteredList;
-      console.log(state.filterBy);
-      let commentCountResponse = listToMap.map(postItem => {
+      let commentCountResponse = state.list.map((postItem) => {
         if(postItem.id === post.id){
           return({
             ...postItem,
@@ -50,15 +49,25 @@ export default function posts (state = postsInitialValue, action){
           return postItem;
         }
       });
-      return state.filterBy === ''
-        ? {
+      return {
           ...state,
           list:commentCountResponse,
-        }
-        : {
-          ...state,
-          filteredList:commentCountResponse,
         };
+    case LOAD_FILTERED_COMMENTS_COUNT:
+      let commentFilteredCountResponse = state.filteredList.map((postItem) =>{
+        if(postItem.id === post.id){
+          return({
+            ...postItem,
+            commentCount:count,
+          });
+        }else{
+          return postItem;
+        }
+      })
+      return {
+        ...state,
+        filteredList:commentFilteredCountResponse,
+      };
     case POSTS_FILTER:
       return {
         ...state,
@@ -72,18 +81,25 @@ export default function posts (state = postsInitialValue, action){
       };
     case VOTE_POST:
       let voteResponse =state.list.map(postItem => {
-        if(postItem.id === post.id){
-          return({
+        return postItem.id === post.id
+        ? {
             ...postItem,
             voteScore : post.voteScore,
-          });
-        }else{
-          return postItem;
-        }
+          }
+        : postItem;
+      });
+      let voteFilteredResponse = state.filteredList.map(postItem =>{
+        return postItem.id === post.id
+        ? {
+          ...postItem,
+          voteScore : post.voteScore,
+          }
+        : postItem;
       });
       return {
         ...state,
-        list:voteResponse.sort(sortFunction)
+        list:voteResponse.sort(sortFunction),
+        filteredList: voteFilteredResponse
       };
     case SORT_POSTS:
       return (sortBy === state.sortBy
