@@ -3,23 +3,25 @@ import { Grid, Row, Col, PageHeader, Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import PostList from './PostList';
+import CategoriesList from './CategoriesList';
 import {postFilter} from '../actions';
 import * as APIInterface from '../utils/APIInterface';
 
 class FilteredCategories extends Component {
-  /*
-  * @description initialize the posts filtered by category.
-  */
+
   componentDidMount(){
-    APIInterface.getPostsByCategory(this.props.match.params.category).then(
-      (posts) => {
+    let path = this.props.match.params.category;
+    if(this.props.categories.length === 0){
+      APIInterface.getPostsByCategory(path).then(
+        (posts) => {
           this.props.loadFiltered({
-            filterBy:this.props.match.params.category,
+            filterBy:path,
             posts: posts
           });
-      }
-    )
+        });
+    }
   }
+
   /*
   * @description Clears the filter values and returns to the main page.
   */
@@ -36,7 +38,7 @@ class FilteredCategories extends Component {
     return(
       <Grid>
         <Row className="show-grid">
-          <Col md={12}>
+          <Col md={10}>
             <PageHeader> {category.charAt(0).toUpperCase() + category.slice(1)}
               <small>
                 <Button bsStyle="link" onClick={this.returnHome}> return to main page</Button>
@@ -46,9 +48,19 @@ class FilteredCategories extends Component {
               <PostList/>
             </div>
           </Col>
+          <Col md={2}>
+            <CategoriesList />
+          </Col>
         </Row>
       </Grid>
     );
+  }
+}
+
+function mapStateToProps({posts}){
+  return {
+    categories: posts.categories,
+    filteredList : posts.filteredList
   }
 }
 
@@ -58,4 +70,4 @@ function mapDispatchToProps(dispatch){
   }
 }
 
-export default withRouter(connect(null,mapDispatchToProps)(FilteredCategories))
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(FilteredCategories))

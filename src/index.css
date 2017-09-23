@@ -24,6 +24,10 @@ body {
   float:right;
 }
 
+.blob_comment_count_text{
+  font-size:12px;
+}
+
 .button_right{
   float:right;
 }
@@ -36,6 +40,9 @@ body {
   margin-top:60px;
   padding-left:15px;
   border-left:1px solid #eee;
+}
+.menu_holder .active button {
+  color:white;
 }
 
 .full_width{

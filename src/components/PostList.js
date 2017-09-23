@@ -11,7 +11,7 @@ class PostList extends Component{
       {
         posts === undefined || posts.length === 0
         ? <Panel>
-            No posts found yet. Come on and start posting.
+            No posts found.
           </Panel>
         : <div>
             {posts.map((post) => (
@@ -29,4 +29,5 @@ class PostList extends Component{
 function mapStateToProps (state){
   return {posts: state.posts.filterBy === '' ? state.posts.list : state.posts.filteredList};
 }
+
 export default connect(mapStateToProps)(PostList)

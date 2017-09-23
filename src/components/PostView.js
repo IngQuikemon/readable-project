@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import { Grid, Row, Col, PageHeader,Panel,Badge,Button,Jumbotron,Glyphicon,Modal} from 'react-bootstrap';
+import { Grid, Row, Col, PageHeader,Badge,Button,Jumbotron,Glyphicon,Modal} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import CommentList from './CommentList';
 import EditPostForm from './EditPostForm';
 import {editPost,loadPostItem,votePost,deletePost,postFilter} from '../actions';
 import * as APIInterface from '../utils/APIInterface';
+import NotFound from './NotFound';
 
 const upVoteValue = 'upVote';
 const downVoteValue = 'downVote';
@@ -89,76 +90,74 @@ class PostView extends Component{
 
   render(){
     const {post} = this.props;
+    let validatePostValue = (post.postItem !== null && !(Object.keys(post.postItem).length === 0 && post.postItem.constructor === Object) && !post.postItem.hasOwnProperty('error'));
     let dateToParse;
     let postDate;
-    if(post.postItem !== null){
+    if(validatePostValue){
       dateToParse = new Date(post.postItem.timestamp);
       postDate = dateToParse.getMonth() + '/' + dateToParse.getDay() + '/' + dateToParse.getFullYear();
-      return(
-        <div>
-          <Grid>
-            <Row className="show-grid">
-              <Col md={12}>
-                <PageHeader> {post.postItem.title} </PageHeader>
-                <div>
-                  <span>posted by {post.postItem.author} on {postDate}. </span>
-                  <span>
-                    Score: <Badge>{post.postItem.voteScore}</Badge>
-                    <Button
-                      bsStyle="link"
-                      onClick={() => this.vote(post.postItem,{option:upVoteValue},'item')}>
-                      <Glyphicon glyph="thumbs-up"/>
-                    </Button>
-                    <Button
-                      bsStyle="link"
-                      onClick={() =>  this.vote(post.postItem,{option:downVoteValue},'item')}>
-                      <Glyphicon glyph="thumbs-down"/>
-                    </Button>
-                  </span>
-                  <span className="button_right">
-                    <Button bsStyle="link" onClick={this.returnHome}>
-                      <Glyphicon glyph="home"/> Return
-                    </Button>
-                    &nbsp;
-                    &nbsp;
-                    <Button bsStyle="default" onClick={() => {this.openEditPostDialog(post.postItem)}}>
-                      <Glyphicon glyph="pencil"/> Edit
-                    </Button>
-                    <Button bsStyle="danger" onClick={() => {this.deletePost(post.postItem)}}>
-                      <Glyphicon glyph="trash"/> Delete
-                    </Button>
-                  </span>
-                </div>
-                <br/>
-                <Jumbotron>
-                  {post.postItem.body}
-                </Jumbotron>
-              <br/>
-              <CommentList
-                postId={post.postItem.id}
-                comments={post.comments} />
-              </Col>
-            </Row>
-          </Grid>
-          <Modal show={this.state.showModal} onHide = {this.closeEditModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>{this.state.modalTitle}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <EditPostForm
-                postItem={post.postItem}
-                onCloseEditModal = {this.closeEditModal} />
-            </Modal.Body>
-          </Modal>
-        </div>
-      );
-    }else{
-      return (
-        <Panel>
-          The post was not found. Verify that you are selecting the right post.
-        </Panel>
-      );
     }
+    return(
+      <div>
+      {validatePostValue === false
+      ? <NotFound />
+      :<div>
+        <Grid>
+          <Row className="show-grid">
+            <Col md={12}>
+              <PageHeader> {post.postItem.title} </PageHeader>
+              <div>
+                <span>posted by {post.postItem.author} on {postDate}. </span>
+                <span>
+                  Score: <Badge>{post.postItem.voteScore}</Badge>
+                  <Button
+                    bsStyle="link"
+                    onClick={() => this.vote(post.postItem,{option:upVoteValue},'item')}>
+                    <Glyphicon glyph="thumbs-up"/>
+                  </Button>
+                  <Button
+                    bsStyle="link"
+                    onClick={() =>  this.vote(post.postItem,{option:downVoteValue},'item')}>
+                    <Glyphicon glyph="thumbs-down"/>
+                  </Button>
+                </span>
+                <span className="button_right">
+                  <Button bsStyle="link" onClick={this.returnHome}>
+                    <Glyphicon glyph="home"/> Return
+                  </Button>
+                  &nbsp;
+                  &nbsp;
+                  <Button bsStyle="default" onClick={() => {this.openEditPostDialog(post.postItem)}}>
+                    <Glyphicon glyph="pencil"/> Edit
+                  </Button>
+                  <Button bsStyle="danger" onClick={() => {this.deletePost(post.postItem)}}>
+                    <Glyphicon glyph="trash"/> Delete
+                  </Button>
+                </span>
+              </div>
+              <br/>
+              <Jumbotron>
+                {post.postItem.body}
+              </Jumbotron>
+            <br/>
+            <CommentList
+              postId={post.postItem.id}
+              comments={post.comments} />
+            </Col>
+          </Row>
+        </Grid>
+        <Modal show={this.state.showModal} onHide = {this.closeEditModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>{this.state.modalTitle}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <EditPostForm
+              postItem={post.postItem}
+              onCloseEditModal = {this.closeEditModal} />
+          </Modal.Body>
+        </Modal>
+      </div>}
+      </div>);
   }
 }
 
