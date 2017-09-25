@@ -45,7 +45,7 @@ class PostItem extends Component {
     return(
         <ListGroupItem >
           <span className="blob_title_text">
-            <Link to={`/posts/${postItem.id}`}>{postItem.title}</Link>
+            <Link to={`/${postItem.category}/${postItem.id}`}>{postItem.title}</Link>
           </span>
           <span className="blob_score_text">
             Score <Badge>{postItem.voteScore}</Badge>

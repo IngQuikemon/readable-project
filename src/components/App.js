@@ -43,7 +43,7 @@ class App extends Component {
                   {...props}
                   />
               )} />
-            <Route exact path="/posts/:id" render={props =>(
+            <Route exact path="/:category/:id" render={props =>(
                 <PostView
                   {...props}/>
             )} />
