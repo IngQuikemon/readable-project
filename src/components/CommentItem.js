@@ -28,6 +28,10 @@ class CommentItem extends Component{
     });
   }
 
+  editComment= (comment,parentId) => {
+    this.props.onEditCommentDialog(comment,parentId);
+  }
+
 
   render(){
     const {commentItem} = this.props;

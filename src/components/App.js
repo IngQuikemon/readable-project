@@ -38,7 +38,7 @@ class App extends Component {
           <Route exact path="/" render={() =>(
               <AllPosts/>
             )}/>
-            <Route exact path="/filtered/:category" render={props => (
+            <Route exact path="/:category" render={props => (
                 <FilteredCategories
                   {...props}
                   />

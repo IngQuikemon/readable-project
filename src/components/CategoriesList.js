@@ -25,7 +25,7 @@ class CategoriesList extends Component{
             filterBy:path,
             posts: posts
           });
-          this.props.history.push(`/filtered/${path}`);
+          this.props.history.push(`/${path}`);
         }
       )
     }
