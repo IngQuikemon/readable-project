@@ -72,7 +72,7 @@ export default function posts (state = postsInitialValue, action){
       return {
         ...state,
         filterBy:filterBy,
-        filteredList:[...posts]
+        filteredList:[...posts].sort(sortFunction)
       }
     case ADD_POST:
       return {
@@ -102,12 +102,17 @@ export default function posts (state = postsInitialValue, action){
         filteredList: voteFilteredResponse
       };
     case SORT_POSTS:
+      //let sortFiltered = state.filteredList.length > 0
+      //  ?
+      //  : state.filteredList
       return (sortBy === state.sortBy
         ? state
         : {
           ...state,
           list: [...state.list].sort((a,b) =>
             {return a[sortBy] < b[sortBy]}),
+          filteredList:  [...state.filteredList].sort((a,b)=>
+          {return a[sortBy] < b[sortBy]}),
           sortBy:sortBy
           }
         )

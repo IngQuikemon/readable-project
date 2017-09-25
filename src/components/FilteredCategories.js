@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
-import { Grid, Row, Col, PageHeader, Button} from 'react-bootstrap';
+import { Grid, Row, Col, PageHeader} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import PostList from './PostList';
 import CategoriesList from './CategoriesList';
-import {postFilter} from '../actions';
+import SortControl from './SortControl';
+import {postFilter,postSort} from '../actions';
 import * as APIInterface from '../utils/APIInterface';
 
 class FilteredCategories extends Component {
@@ -23,30 +24,29 @@ class FilteredCategories extends Component {
   }
 
   /*
-  * @description Clears the filter values and returns to the main page.
+  * @description Refresh the list sorting it by the value selected.
+  * @param {object} event - contains the control event information.
   */
-  returnHome = (event) => {
-    this.props.loadFiltered({
-      filterBy:'',
-      posts:[]
-    });
-    this.props.history.push('/');
+  orderPosts = (event) => {
+    this.props.sortListBy(event.target.value);
   }
 
   render(){
     const {category} = this.props.match.params;
+    const {sortBy} = this.props;
     return(
       <Grid>
         <Row className="show-grid">
           <Col md={10}>
-            <PageHeader> {category.charAt(0).toUpperCase() + category.slice(1)}
-              <small>
-                <Button bsStyle="link" onClick={this.returnHome}> return to main page</Button>
-              </small>
+            <PageHeader>Showing {category.charAt(0).toUpperCase() + category.slice(1)} posts
             </PageHeader>
-            <div>
-              <PostList/>
+            <div className="full_width">
+              <SortControl
+                sortPosts={this.orderPosts}
+                sortBy={sortBy} />
             </div>
+            <br/>
+            <PostList/>
           </Col>
           <Col md={2}>
             <CategoriesList />
@@ -59,14 +59,15 @@ class FilteredCategories extends Component {
 
 function mapStateToProps({posts}){
   return {
-    categories: posts.categories,
-    filteredList : posts.filteredList
+    sortBy : posts.sortBy,
+    categories: posts.categories
   }
 }
 
 function mapDispatchToProps(dispatch){
   return {
-    loadFiltered: (data) => dispatch(postFilter(data))
+    loadFiltered: (data) => dispatch(postFilter(data)),
+    sortListBy: (data) => dispatch(postSort(data))
   }
 }
 

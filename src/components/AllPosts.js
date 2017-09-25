@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Grid, Row, Col, PageHeader,Button,Glyphicon,FormControl,Modal} from 'react-bootstrap';
+import { Grid, Row, Col, PageHeader,Button,Glyphicon,Modal} from 'react-bootstrap';
 import {connect} from 'react-redux';
+import SortControl from './SortControl';
 import PostList from './PostList';
 import CategoriesList from './CategoriesList';
 import EditPostForm from './EditPostForm';
@@ -26,7 +27,7 @@ class AllPosts extends Component{
   * @description Refresh the list sorting it by the value selected.
   * @param {object} event - contains the control event information.
   */
-  orderPost = (event) => {
+  orderPosts = (event) => {
     this.props.sortListBy(event.target.value);
   }
   /*
@@ -76,15 +77,9 @@ class AllPosts extends Component{
                 <Button bsStyle="link" onClick={() => this.openEditPostDialog(null)}>
                   <Glyphicon glyph="plus"/> Add new post
                 </Button>
-                <span className="button_right">
-                  <FormControl componentClass="select" onChange={this.orderPost} value={posts.sortBy}>
-                    <option value="voteScore">Vote Score</option>
-                    <option value="timestamp">Date Posted</option>
-                  </FormControl>
-                </span>
-                <span className="button_right button_padding">
-                  Order by &nbsp;
-                </span>
+                <SortControl
+                  sortPosts={this.orderPosts}
+                  sortBy={posts.sortBy} />
               </div>
               <br/>
               <PostList/>
